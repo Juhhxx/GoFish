@@ -29,7 +29,7 @@ public class KeymashManager : MonoBehaviour
     [Button(enabledMode:EButtonEnableMode.Playmode)]
     private void StartMinigameTest()
     {
-        StartMinigame("MAFALDA");
+        StartMinigame("PENISBALLS");
     }
     private void StartMinigame(string givenWord)
     {
@@ -81,10 +81,14 @@ public class KeymashManager : MonoBehaviour
         if (!_hasEnded) 
         {
             _playerScore += _playerGain;
+            _sliderTransform.DOKill(false);
             _sliderTransform.DOShakeRotation(0.075f, 5f);
         }
         if (_spawnedKeyImages.Count >= 1) 
         {
+            RectTransform rectTrans = _spawnedKeyImages.Last().rectTransform;
+            rectTrans.DOKill(false);
+            rectTrans.localScale = Vector3.one;
             _spawnedKeyImages.Last().sprite = PressedSpriteForLetter(_currentLetter);
             _spawnedKeyImages.Last().rectTransform.DOPunchScale(Vector3.one * 0.4f, 0.2f);
         }
