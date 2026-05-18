@@ -14,6 +14,5 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Card
   <Rank>k__BackingField: 0
   <Suit>k__BackingField: 0
-  <CardHability>k__BackingField: 2
-  <DisplayName>k__BackingField: 
+  <DisplayName>k__BackingField: Two of Diamonds
   <DisplayImage>k__BackingField: {fileID: 1304102990, guid: 77206e5dca773c243a27d4411ff99e53, type: 3}

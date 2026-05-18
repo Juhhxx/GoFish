@@ -34,11 +34,21 @@ public class DeckInstance
         _cards = new List<CardInstance>();
         foreach (Card card in cards) Cards.Add(card.Instantiate(this));
 
+        _cards.Shuffle();
+
         Debug.Log($"Initialized Deck Size : {_cards.Count}");
     }
 
     public CardInstance GetRandomCard()
     {
         return _cards[UnityEngine.Random.Range(0,_cards.Count)];
+    }
+
+    public CardInstance GetCard()
+    {
+        CardInstance card;
+
+        if (_cards.TryPop(out card)) return card;
+        return null;
     }
 }

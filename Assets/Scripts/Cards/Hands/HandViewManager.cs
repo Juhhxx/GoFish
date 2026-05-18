@@ -64,6 +64,10 @@ public class HandViewManager : MonoBehaviour
             {
                 CardViewManager cardView = Instantiate(_cardPrefab, transform);
 
+                var pos = cardView.transform.position;
+                pos.y -= 5;
+                cardView.transform.position = pos;
+
                 cardView.SetUpCard(card);
 
                 _cardViews.Add(cardView);
@@ -101,6 +105,8 @@ public class HandViewManager : MonoBehaviour
                 y,
                 i * -0.01f
             );
+
+            card.SetOrigin(targetPos);
 
             card.transform.DOKill();
 
