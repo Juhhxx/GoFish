@@ -26,15 +26,18 @@ public class DeckViewManager : MonoBehaviour
         }
         _createdCards.Clear();
 
+        // Temporary
+        DeckInstance deck = _deck.Instantiate();
+
         int i = 0;
 
-        foreach (Card c in _deck.Cards)
+        foreach (CardInstance c in deck.Cards)
         {
             var card = Instantiate(_cardPrefab, transform);
             card.transform.localPosition = new Vector3(0f, 0.005f * i, 0f);
             card.transform.rotation = Quaternion.Euler(-90f, 180f, 0f);
 
-            card.GetComponent<CardViewManager>()?.SetUpCard(c.DisplayImage, _deck.DeckFront, _deck.DeckBack);
+            card.GetComponent<CardViewManager>()?.SetUpCard(c);
             _createdCards.Add(card);
             i++;
         }

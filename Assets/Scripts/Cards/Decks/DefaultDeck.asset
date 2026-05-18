@@ -15,7 +15,7 @@ MonoBehaviour:
   DeckName: Default Deck
   DeckFront: {fileID: 1289012515, guid: 77206e5dca773c243a27d4411ff99e53, type: 3}
   DeckBack: {fileID: -1606069884, guid: 77206e5dca773c243a27d4411ff99e53, type: 3}
-  _cards:
+  Cards:
   - {fileID: 11400000, guid: 4d7537ef20809e14db00e1ad8f810fbf, type: 2}
   - {fileID: 11400000, guid: e1e75ae93e092fa4b94962630177b9b1, type: 2}
   - {fileID: 11400000, guid: 52037f865a6cef247abfbbe0d38e4775, type: 2}
