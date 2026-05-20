@@ -13,6 +13,11 @@ public class Deck : ScriptableObject
     [SerializeField, ReorderableList] public List<Card> Cards;
 
     public DeckInstance Instantiate() => new DeckInstance(DeckName, DeckFront, DeckBack, Cards);
+
+    public Card GetRandomCard()
+    {
+        return Cards[UnityEngine.Random.Range(0,Cards.Count)];
+    }
 }
 
 [Serializable]

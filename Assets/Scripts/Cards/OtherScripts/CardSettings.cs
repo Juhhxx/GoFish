@@ -5,6 +5,7 @@ using UnityEngine;
 public class CardSettings : ScriptableObject
 {
     [SerializeField] private List<RankHability> _rankHabilities;
+    [SerializeField] private List<HabilityValue> _habilityValues;
     
     public Hability GetHabilityByRank(Rank rank)
     {
@@ -15,11 +16,28 @@ public class CardSettings : ScriptableObject
 
         return Hability.None;
     }
+
+    public int GetValueByRank(Rank rank)
+    {
+        foreach (HabilityValue hv in _habilityValues)
+        {
+            Hability hability = GetHabilityByRank(rank);
+
+            if (hv.Hability == hability) return hv.Value;
+        }
+        return 0;
+    }
 }
 
 [System.Serializable]
 public struct RankHability
 {
     public Rank Rank;
+    public Hability Hability;
+}
+[System.Serializable]
+public struct HabilityValue
+{
+    public int Value;
     public Hability Hability;
 }

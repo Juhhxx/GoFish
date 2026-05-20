@@ -31,7 +31,7 @@ public class KeymashManager : MonoBehaviour
     {
         StartMinigame("PENISBALLS");
     }
-    private void StartMinigame(string givenWord)
+    public void StartMinigame(string givenWord)
     {
         _spamWord = givenWord;
         UpdateKeyToPress();
