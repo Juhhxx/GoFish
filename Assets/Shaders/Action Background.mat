@@ -7,7 +7,7 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: Action Lines Test
+  m_Name: Action Background
   m_Shader: {fileID: -6465566751694194690, guid: 8ad0524462250e7429f4d25d45e2405c, type: 3}
   m_Parent: {fileID: 0}
   m_ModifiedSerializedProperties: 0
@@ -23,6 +23,10 @@ Material:
   m_SavedProperties:
     serializedVersion: 3
     m_TexEnvs:
+    - _MainTex:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
     - unity_Lightmaps:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
@@ -36,7 +40,19 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     m_Ints: []
-    m_Floats: []
-    m_Colors: []
+    m_Floats:
+    - _black_line_count: 3
+    - _black_line_density: 2.5
+    - _black_line_falloff: 0.85
+    - _black_line_speed: 0.5
+    - _center_mask_edge: 0.4
+    - _center_mask_size: 0.9
+    - _framerate: 12
+    - _line_count: 20
+    - _line_density: 0.3
+    - _line_falloff: 1
+    - _speed: 3
+    m_Colors:
+    - _line_origin: {r: 0.5, g: 0.5, b: 0, a: 0}
   m_BuildTextureStacks: []
   m_AllowLocking: 1

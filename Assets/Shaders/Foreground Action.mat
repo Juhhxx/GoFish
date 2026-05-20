@@ -7,8 +7,8 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: Shader Graphs_KeySmash Canvas Shader
-  m_Shader: {fileID: -6465566751694194690, guid: 4cb370808300417408b0188f3d1a6c52, type: 3}
+  m_Name: Foreground Action
+  m_Shader: {fileID: -6465566751694194690, guid: 5c8380a8029ae4847b0023e011fd8dc6, type: 3}
   m_Parent: {fileID: 0}
   m_ModifiedSerializedProperties: 0
   m_ValidKeywords: []
@@ -41,6 +41,7 @@ Material:
         m_Offset: {x: 0, y: 0}
     m_Ints: []
     m_Floats:
+    - _AlphaClip: 0.5
     - _ColorMask: 15
     - _Stencil: 0
     - _StencilComp: 8
@@ -49,12 +50,19 @@ Material:
     - _StencilWriteMask: 255
     - _UIMaskSoftnessX: 1
     - _UIMaskSoftnessY: 1
-    - _density: 60
-    - _speed: 2
+    - _black_line_count: 3
+    - _black_line_density: 2
+    - _black_line_falloff: 0.85
+    - _black_line_speed: 0.5
+    - _center_mask_edge: 0.425
+    - _center_mask_size: 0.06
+    - _framerate: 12
+    - _line_count: 20
+    - _line_density: 0.5
+    - _line_falloff: 1
+    - _speed: 1
     m_Colors:
-    - _Background_Color: {r: 0.02375933, g: 0.096634574, b: 0.26792446, a: 1}
     - _ClipRect: {r: 0, g: 0, b: 0, a: 0}
-    - _Vector2_Subtract: {r: 0.5, g: 0.5, b: 0, a: 0}
-    - _subtract_vector2: {r: 0.5, g: 0.5, b: 0, a: 0}
+    - _line_origin: {r: 0.5, g: 0.5, b: 0, a: 0}
   m_BuildTextureStacks: []
   m_AllowLocking: 1
