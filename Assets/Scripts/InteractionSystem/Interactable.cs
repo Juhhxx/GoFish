@@ -9,6 +9,14 @@ public abstract class Interactable : MonoBehaviour
     public event Action InteractEnd;
     public event Action<bool> InteractHover;
 
+    public void ResetEvents()
+    {
+        InteractBegin = null;
+        Interact = null;
+        InteractEnd = null;
+        InteractHover = null;
+    }
+
     private void Start()
     {
         Interactable[] ints = transform.parent?.GetComponentsInParent<Interactable>();
