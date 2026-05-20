@@ -8,22 +8,52 @@ public class ShopManager : MonoBehaviour
     [SerializeField] private Deck _currentDeck;
     [SerializeField] private GameObject _cardOfferPrefab;
     [SerializeField] private List<RectTransform> _offerPivot = new List<RectTransform>();
-    [SerializeField] private Timer _timer;
+    private List<GameObject> _pastOffers = new List<GameObject>();
+    [SerializeField] private UnityEngine.UI.Image _timerFill;
+    private Timer _timer;
     [SerializeField] private float _refreshOffersTime;
     [SerializeField] private CardSettings _cardSettings;
-    public event Action<Card, int, int> OnCardBought;
+    [SerializeField] private UnityEngine.UI.Button _dmgUpgradeButton;
+    [SerializeField] private UnityEngine.UI.Button _healthUpgradeButton;
+    [SerializeField] private UnityEngine.UI.Button _landPurchaseButton;
+    public event Action<Card, int> OnCardBought;
+    public event Action OnDMGUpgradeBought;
+    public event Action OnHealthUpgradeBought;
+    public event Action OnLandBought;
+    private int _upgradePrice;
     private void Start()
     {
+        _timer = new Timer(_refreshOffersTime);
+        _timer.OnTimerDone += RefreshOffers;
         RefreshOffers();
     }
+
+    private void Update()
+    {
+        _timer.CountTimer();
+        _timerFill.fillAmount = _timer.CurrentTime / _refreshOffersTime;
+    }
+
     private void RefreshOffers()
     {
+        DestroyPastOffers();
         for (int i = 0; i < _offerPivot.Count; i++)
         {
             GameObject offer = Instantiate(_cardOfferPrefab, _offerPivot[i]);
+            _pastOffers.Add(offer);
             CreateNewOffer(offer.GetComponent<ShopOfferManager>(), offer.GetComponent<UnityEngine.UI.Button>());
         }
     }
+    
+    private void DestroyPastOffers()
+    {
+        foreach (GameObject pastOffer in _pastOffers)
+        {
+            Destroy(pastOffer);
+        }
+        _pastOffers.Clear();
+    }
+
     public void CreateNewOffer(ShopOfferManager shopOfferManager, UnityEngine.UI.Button offerButton)
     {
         int offerCardAmount = UnityEngine.Random.Range(1, 4)* 2;
@@ -35,11 +65,22 @@ public class ShopManager : MonoBehaviour
 
         shopOfferManager.OfferSetUp(price, offerCardAmount, offerCard.DisplayImage);
 
-        offerButton.onClick.AddListener(() => OnCardBought.Invoke(offerCard, offerCardAmount, price));
+        offerButton.onClick.AddListener(() => OnCardBought.Invoke(offerCard, offerCardAmount));
     }
 
     private int CalculatePrice(int givenValue, int givenAmount)
     {
         return givenValue + givenAmount;
+    }
+
+    private void UpgradeButtonSetup()
+    {
+        _dmgUpgradeButton.onClick.AddListener(() => OnDMGUpgradeBought.Invoke());
+        _healthUpgradeButton.onClick.AddListener(() => OnHealthUpgradeBought.Invoke());
+    }
+
+    private void SetUpLandPurchase()
+    {
+        _landPurchaseButton.onClick.AddListener(() => OnLandBought.Invoke());
     }
 }
