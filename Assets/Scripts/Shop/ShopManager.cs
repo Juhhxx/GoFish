@@ -68,7 +68,7 @@ public class ShopManager : MonoBehaviour
 
         shopOfferManager.OfferSetUp(price, offerCardAmount, offerCard.DisplayImage);
 
-        offerButton.onClick.AddListener(() => Buy(price, () => OnCardBought.Invoke(offerCard, offerCardAmount), null));
+        offerButton.onClick.AddListener(() => Buy(price, () => OnCardBought?.Invoke(offerCard, offerCardAmount), null));
     }
 
     private int CalculatePrice(int givenValue, int givenAmount)
@@ -78,25 +78,25 @@ public class ShopManager : MonoBehaviour
 
     private void UpgradeButtonSetup()
     {
-        _dmgUpgradeButton.onClick.AddListener(() => Buy(_upgradePrice, () => OnDMGUpgradeBought.Invoke(), null));
-        _healthUpgradeButton.onClick.AddListener(() => Buy(_upgradePrice, () => OnHealthUpgradeBought.Invoke(), null));
+        _dmgUpgradeButton.onClick.AddListener(() => Buy(_upgradePrice, () => OnDMGUpgradeBought?.Invoke(), null));
+        _healthUpgradeButton.onClick.AddListener(() => Buy(_upgradePrice, () => OnHealthUpgradeBought?.Invoke(), null));
     }
 
     private void SetUpLandPurchase()
     {
-        _landPurchaseButton.onClick.AddListener(() => Buy(_landPrice, () => OnLandBought.Invoke(), null));
+        _landPurchaseButton.onClick.AddListener(() => Buy(_landPrice, () => OnLandBought?.Invoke(), null));
     }
 
     private void Buy(int price, Action onBuy, Action onBrokeAss)
     {
         if (_playerController.Pearls >= price) 
         {
-            onBuy.Invoke();
+            onBuy?.Invoke();
             _playerController.AlterMoney(-price);
         }
         else 
         {
-            onBrokeAss.Invoke();
+            onBrokeAss?.Invoke();
             Debug.Log("BROKE");
         }
     }

@@ -39,3 +39,16 @@ MonoBehaviour:
     Hability: 0
   - Rank: 12
     Hability: 0
+  _habilityValues:
+  - Value: 2
+    Hability: 0
+  - Value: 3
+    Hability: 1
+  - Value: 3
+    Hability: 4
+  - Value: 3
+    Hability: 5
+  - Value: 2
+    Hability: 2
+  - Value: 2
+    Hability: 3
