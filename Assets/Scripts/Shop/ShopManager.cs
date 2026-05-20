@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using NaughtyAttributes;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class ShopManager : MonoBehaviour
@@ -16,11 +17,13 @@ public class ShopManager : MonoBehaviour
     [SerializeField] private UnityEngine.UI.Button _dmgUpgradeButton;
     [SerializeField] private UnityEngine.UI.Button _healthUpgradeButton;
     [SerializeField] private UnityEngine.UI.Button _landPurchaseButton;
+    [SerializeField] private PlayerController _playerController;
     public event Action<Card, int> OnCardBought;
     public event Action OnDMGUpgradeBought;
     public event Action OnHealthUpgradeBought;
     public event Action OnLandBought;
     private int _upgradePrice;
+    private int _landPrice;
     private void Start()
     {
         _timer = new Timer(_refreshOffersTime);
@@ -65,7 +68,7 @@ public class ShopManager : MonoBehaviour
 
         shopOfferManager.OfferSetUp(price, offerCardAmount, offerCard.DisplayImage);
 
-        offerButton.onClick.AddListener(() => OnCardBought.Invoke(offerCard, offerCardAmount));
+        offerButton.onClick.AddListener(() => Buy(price, () => OnCardBought.Invoke(offerCard, offerCardAmount), null));
     }
 
     private int CalculatePrice(int givenValue, int givenAmount)
@@ -75,12 +78,26 @@ public class ShopManager : MonoBehaviour
 
     private void UpgradeButtonSetup()
     {
-        _dmgUpgradeButton.onClick.AddListener(() => OnDMGUpgradeBought.Invoke());
-        _healthUpgradeButton.onClick.AddListener(() => OnHealthUpgradeBought.Invoke());
+        _dmgUpgradeButton.onClick.AddListener(() => Buy(_upgradePrice, () => OnDMGUpgradeBought.Invoke(), null));
+        _healthUpgradeButton.onClick.AddListener(() => Buy(_upgradePrice, () => OnHealthUpgradeBought.Invoke(), null));
     }
 
     private void SetUpLandPurchase()
     {
-        _landPurchaseButton.onClick.AddListener(() => OnLandBought.Invoke());
+        _landPurchaseButton.onClick.AddListener(() => Buy(_landPrice, () => OnLandBought.Invoke(), null));
+    }
+
+    private void Buy(int price, Action onBuy, Action onBrokeAss)
+    {
+        if (_playerController.Pearls >= price) 
+        {
+            onBuy.Invoke();
+            _playerController.AlterMoney(-price);
+        }
+        else 
+        {
+            onBrokeAss.Invoke();
+            Debug.Log("BROKE");
+        }
     }
 }
