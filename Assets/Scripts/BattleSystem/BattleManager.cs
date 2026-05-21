@@ -112,7 +112,10 @@ public class BattleManager : MonoBehaviour
 
     public void PlayPeixinho(bool isFull)
     {
-        
+        foreach (CardInstance card in _playerHand.GetSelectedCards())
+        {
+            _playerHand.RemoveCard(card);
+        }
     }
 
     private bool _playerHasFished;

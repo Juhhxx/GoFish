@@ -32,6 +32,8 @@ public class BattleViewManager : MonoBehaviour
         _battleManager.OnBattleStateChanged += RefreshBattleUI;
 
         OnCallButtonPressed += () => _battleManager.CallCard();
+        OnPeixinhoButtonPressed += () => _battleManager.PlayPeixinho(true);
+        OnHalfPeixinhoButtonPressed += () => _battleManager.PlayPeixinho(false);
 
         _callButton.onClick.AddListener(() => OnCallButtonPressed?.Invoke());
         callEvents.OnPointerEnterEvent.AddListener(() => OnCallButtonHovered?.Invoke(true));
