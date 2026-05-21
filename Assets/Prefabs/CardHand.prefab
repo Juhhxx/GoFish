@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 7996999324337507174}
   - component: {fileID: 8104548052100853533}
   m_Layer: 0
-  m_Name: Card
+  m_Name: CardHand
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -75,10 +75,17 @@ MonoBehaviour:
   _cardFront: {fileID: 2640044938660655562}
   _cardBack: {fileID: 6561463199593501879}
   _cardOutline: {fileID: 306891682929029147}
+  _outlineColor: {r: 1, g: 1, b: 1, a: 1}
+  _outlineSelectedColor: {r: 1, g: 0.92156863, b: 0.015686275, a: 1}
   _hoverScaleAmount: 1.2
   _hoverMoveAmount: {x: 0, y: 0.5, z: -0.5}
-  _tweenDuration: 0.2
+  _callScaleAmount: 1.05
+  _callMoveAmount: {x: 0, y: 0.25, z: -0.3}
+  _peixinhoShakeAmount: {x: 0, y: 0, z: 3}
+  _tweenHoverDuration: 0.2
   _tweenDeckSpawnDuration: 0.05
+  _tweenOutlineChangeDuration: 0.2
+  _tweenCallDuration: 0.2
 --- !u!114 &8104548052100853533
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -1,29 +1,39 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using NaughtyAttributes;
 using UnityEngine;
 
 public class HandManager : MonoBehaviour
 {
     [SerializeField] private List<CardInstance> _hand;
-    [SerializeField] private HandViewManager _handView;
+    public List<CardInstance> Hand => _hand;
+
     public event Action<List<CardInstance>> OnHandChanged;
 
     private const int MAXSELECTEDCARDS = 4;
     private List<CardInstance> _selectedCards = new List<CardInstance>();
     public event Action<CardInstance, bool> OnHandSelectionChanged;
 
-    public event Action<bool, bool> OnPeixinhoUpdate;
-    public event Action<bool, Rank> OnCallUpdate;
+    public bool Contains(Rank rank)
+    {
+        return _hand.Any((card) => card.Rank == rank); 
+    }
+
+    public IReadOnlyList<CardInstance> GetSelectedCards()
+    {
+        return _selectedCards;
+    }
+    public IReadOnlyList<CardInstance> GetCardsOfRank(Rank rank)
+    {
+        return _hand.Where((card) => card.Rank == rank).ToList();
+    }
 
     public void AddCard(CardInstance card)
     {
         _hand.Add(card);
         _hand.Sort();
-        OnHandChanged.Invoke(_hand);
+        OnHandChanged?.Invoke(_hand);
     }
-
     public void RemoveCard(CardInstance card)
     {
         _hand.Remove(card);
@@ -35,15 +45,11 @@ public class HandManager : MonoBehaviour
     {
         return _selectedCards.Contains(card);
     }
-
     public void ToggleCardSelection(CardInstance card)
     {
         if (_selectedCards.Contains(card))
         {
             _selectedCards.Remove(card);
-            _selectedCards.Sort();
-            CheckPeixinho();
-            CheckCall();
 
             OnHandSelectionChanged?.Invoke(card, false);
 
@@ -54,44 +60,57 @@ public class HandManager : MonoBehaviour
             return;
 
         _selectedCards.Add(card);
-        _selectedCards.Sort();
-        CheckPeixinho();
-        CheckCall();
 
         OnHandSelectionChanged?.Invoke(card, true);
     }
 
-    public void CheckPeixinho()
+    public void ClearSelection()
     {
-        var groups = _selectedCards
-            .GroupBy(card => card.Rank)
-            .Select(group => group.Count())
-            .ToList();
+        var tmp = new List<CardInstance>(_selectedCards);
 
-        Debug.Log(groups);
-
-        bool hasExactlyOnePair =    groups.Count(count => count == 2) == 1 &&
-                                    groups.All(count => count <= 2);
-
-        bool hasFourOfAKind =       _selectedCards.Count == 4 &&
-                                    groups.Count == 1;
-
-        // First check is if there is a peixinho, seconf is if there is a 4 card peixinho
-        OnPeixinhoUpdate?.Invoke(hasExactlyOnePair || hasFourOfAKind, hasFourOfAKind);
+        foreach (CardInstance card in tmp)
+        {
+            ToggleCardSelection(card);
+        }
     }
 
-    public void CheckCall()
+    // Call
+    public bool CanCall()
     {
-        if (_selectedCards.Count == 0)
+        if (_selectedCards.Count == 0 || _selectedCards.Count == MAXSELECTEDCARDS)
         {
-            OnCallUpdate?.Invoke(false, Rank.Ace);
-            return;
+            return false;
         }
 
         bool allSameRank = _selectedCards
             .GroupBy(card => card.Rank)
             .Count() == 1;
         
-        OnCallUpdate?.Invoke(allSameRank, _selectedCards[0].Rank);
+        return allSameRank;
+    }
+
+    public Rank GetCallRank()
+    {
+        return _selectedCards[0].Rank;
+    }
+
+    // Peixinhos
+    public bool HasHalfPeixinho()
+    {
+        return _selectedCards.Count == 2 &&
+            _selectedCards.All(card =>
+                card.Rank == _selectedCards[0].Rank);
+    }
+
+    public bool HasPeixinho()
+    {
+        return _selectedCards.Count == 4 &&
+            _selectedCards.All(card =>
+                card.Rank == _selectedCards[0].Rank);
+    }
+
+    public Rank GetPeixinhoRank()
+    {
+        return _selectedCards[0].Rank;
     }
 }

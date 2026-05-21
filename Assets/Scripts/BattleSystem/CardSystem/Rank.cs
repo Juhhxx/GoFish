@@ -12,5 +12,6 @@ public enum Rank
     Jack,
     Queen,
     King,
-    Ace
+    Ace,
+    None
 }

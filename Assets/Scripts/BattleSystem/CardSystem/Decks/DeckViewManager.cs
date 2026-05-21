@@ -2,12 +2,12 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using DG.Tweening;
-using NaughtyAttributes;
 using UnityEngine;
 
 public class DeckViewManager : MonoBehaviour
 {
     [SerializeField] private GameObject _cardPrefab;
+    [SerializeField] private GameObject _warning;
 
     // Animations
     [SerializeField] private float _deckDropHeight = 5f;
@@ -18,7 +18,7 @@ public class DeckViewManager : MonoBehaviour
 
     private List<CardViewManager> _createdCards = new List<CardViewManager>();
 
-    public void CreateDeck(DeckInstance deck)
+    public void CreateDeck(DeckInstance deck, Action onEnd)
     {
         foreach (CardViewManager cv in _createdCards)
         {
@@ -30,10 +30,10 @@ public class DeckViewManager : MonoBehaviour
         }
         _createdCards.Clear();
 
-        StartCoroutine(CreateDeckCR(deck));
+        StartCoroutine(CreateDeckCR(deck, onEnd));
     }
 
-    private IEnumerator CreateDeckCR(DeckInstance deck)
+    private IEnumerator CreateDeckCR(DeckInstance deck, Action onEnd)
     {
         int i = 0;
 
@@ -52,14 +52,14 @@ public class DeckViewManager : MonoBehaviour
 
             _createdCards.Add(view);
 
-            card.GetComponent<Collider>().enabled = false;
-
             SpriteRenderer[] sprs = card.GetComponentsInChildren<SpriteRenderer>();
             foreach (SpriteRenderer spr in sprs) spr.sortingOrder = -1;
             i++;
 
             yield return new WaitForSeconds(_deckDropAnimationTime);
         }
+
+        onEnd?.Invoke();
     }
 
     public void RemoveCard(CardInstance card, Action onEnd, bool player)
@@ -74,5 +74,10 @@ public class DeckViewManager : MonoBehaviour
 
         view.transform.DOMove(pos, _giveCardsAnimationTime).OnComplete(() => onEnd?.Invoke());
 
+    }
+
+    public void ToggleWarning(bool onOff)
+    {
+        _warning.SetActive(onOff);
     }
 }

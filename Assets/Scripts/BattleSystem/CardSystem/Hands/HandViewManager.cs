@@ -1,11 +1,13 @@
 using System.Collections.Generic;
 using UnityEngine;
 using DG.Tweening;
+using System.Linq;
 
 public class HandViewManager : MonoBehaviour
 {
     [Header("References")]
     [SerializeField] private HandManager _handManager;
+    [SerializeField] private BattleViewManager _battleView;
     [SerializeField] private CardViewManager _cardPrefab;
 
     [Header("Layout")]
@@ -23,13 +25,27 @@ public class HandViewManager : MonoBehaviour
     {
         _handManager.OnHandChanged += RefreshHand;
         _handManager.OnHandSelectionChanged += OnCardSelectionChanged;
+
+        if (_battleView != null)
+        {
+            _battleView.OnCallButtonHovered += (onOff) => SelectionAnimationsHandle(true, onOff);
+            _battleView.OnCallButtonPressed += () => DoStopSelectionAnimation(true);
+
+            _battleView.OnPeixinhoButtonHovered += (onOff) => SelectionAnimationsHandle(false, onOff);
+            _battleView.OnPeixinhoButtonPressed += () => DoStopSelectionAnimation(true);
+
+            _battleView.OnHalfPeixinhoButtonHovered += (onOff) => SelectionAnimationsHandle(false, onOff);
+            _battleView.OnHalfPeixinhoButtonPressed += () => DoStopSelectionAnimation(true);
+        }
     }
 
     private void OnDestroy()
     {
         if (_handManager != null)
             _handManager.OnHandChanged -= RefreshHand;
+            _handManager.OnHandSelectionChanged -= OnCardSelectionChanged;
     }
+
 
     private void OnCardSelectionChanged(CardInstance card, bool selected)
     {
@@ -40,6 +56,41 @@ public class HandViewManager : MonoBehaviour
             view.SetSelected(selected);
         }
     }
+    private List<CardViewManager> GetSelectedCards()
+    {
+        return _cardViews.Where((view) => view.Selected).ToList();
+    }
+
+    private void SelectionAnimationsHandle(bool isCall, bool onOff)
+    {
+        if (isCall && onOff) DoSelectionCallAnim();
+        else if (!isCall && onOff) DoSelectionPeixinhoAnim();
+        else DoStopSelectionAnimation();
+    }
+
+    private void DoSelectionCallAnim()
+    {
+        foreach(CardViewManager view in GetSelectedCards())
+        {
+            view.DoCallAnim();
+        }
+    }
+
+    private void DoSelectionPeixinhoAnim()
+    {
+        foreach(CardViewManager view in GetSelectedCards())
+        {
+            view.DoPeixinhoAnim();
+        }
+    }
+    private void DoStopSelectionAnimation(bool toggleOutline = false)
+    {
+        foreach(CardViewManager view in GetSelectedCards())
+        {
+            view.DoStopAnimations(toggleOutline);
+        }
+    }
+
 
     private void RefreshHand(List<CardInstance> hand)
     {
@@ -133,7 +184,7 @@ public class HandViewManager : MonoBehaviour
                 i * -0.025f
             );
 
-            card.SetOrigin(targetPos);
+            card.SetOrigin(targetPos, rotation);
 
             card.transform.DOKill();
 

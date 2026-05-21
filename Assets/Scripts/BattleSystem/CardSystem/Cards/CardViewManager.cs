@@ -15,11 +15,21 @@ public class CardViewManager : MonoBehaviour
     [Header("Animations")]
     [SerializeField] private float _hoverScaleAmount;
     [SerializeField] private Vector3 _hoverMoveAmount;
-    [SerializeField] private float _tweenDuration;
+
+    [SerializeField] private float _callScaleAmount;
+    [SerializeField] private Vector3 _callMoveAmount;
+
+    [SerializeField] private Vector3 _peixinhoShakeAmount;
+
+    [SerializeField] private float _tweenHoverDuration;
     [SerializeField] private float _tweenDeckSpawnDuration;
+    [SerializeField] private float _tweenOutlineChangeDuration = 0.2f;
+    [SerializeField] private float _tweenCallDuration = 0.2f;
 
     private Vector3 _originPos;
+    private float _originRot;
     private bool _selected = false;
+    public bool Selected => _selected;
 
     public CardInstance Card { get; private set; }
 
@@ -28,7 +38,11 @@ public class CardViewManager : MonoBehaviour
         // _originPos = transform.position;
     }
 
-    public void SetOrigin(Vector3 pos) => _originPos = pos;
+    public void SetOrigin(Vector3 pos, float rot)
+    {
+        _originPos = pos;
+        _originRot = rot;
+    }
 
     public void SetUpCard(CardInstance card)
     {
@@ -66,31 +80,49 @@ public class CardViewManager : MonoBehaviour
 
     public void DoCardHoverAnim()
     {
-
         transform.DOKill();
-        transform.DOScale(Vector3.one * _hoverScaleAmount, _tweenDuration);
-        transform.DOLocalMove(_originPos + _hoverMoveAmount, _tweenDuration);
+        transform.DOScale(Vector3.one * _hoverScaleAmount, _tweenHoverDuration);
+        transform.DOLocalMove(_originPos + _hoverMoveAmount, _tweenHoverDuration);
         _cardOutline.enabled = true;
     }
 
     public void DoCardUnhoverAnim()
     {
-
         transform.DOKill();
-        transform.DOScale(Vector3.one, _tweenDuration);
-        transform.DOLocalMove(_originPos, _tweenDuration);
+        transform.DOScale(Vector3.one, _tweenHoverDuration);
+        transform.DOLocalMove(_originPos, _tweenHoverDuration);
         if (!_selected) _cardOutline.enabled = false;
     }
 
     public void DoSelectedAnim()
     {
-        transform.DOKill();
         _cardOutline.DOColor(_outlineSelectedColor, 0.2f);
     }
 
     public void DoUnselectAnim()
     {
-        transform.DOKill();
         _cardOutline.DOColor(_outlineColor, 0.2f);
+    }
+
+    public void DoCallAnim()
+    {
+        transform.DOKill();
+        transform.DOScale(Vector3.one * _callScaleAmount, _tweenHoverDuration);
+        transform.DOLocalMove(_originPos + _callMoveAmount, _tweenHoverDuration);
+    }
+
+    public void DoPeixinhoAnim()
+    {
+        transform.DOKill();
+        transform.DOShakeRotation(0.2f, _peixinhoShakeAmount).SetLoops(-1);
+    }
+
+    public void DoStopAnimations(bool toggleOutline = false)
+    {
+        transform.DOKill();
+        transform.DOLocalMove(_originPos, 0.2f);
+        transform.DOScale(Vector3.one, 0.2f);
+        transform.DOLocalRotate(new Vector3(0f, 0f, _originRot), 0.2f);
+        if (toggleOutline) _cardOutline.enabled = false;
     }
 }

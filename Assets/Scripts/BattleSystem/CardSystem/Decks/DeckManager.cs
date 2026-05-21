@@ -1,39 +1,47 @@
-using NaughtyAttributes;
+using System;
 using UnityEngine;
 
 public class DeckManager : MonoBehaviour
 {
-    [SerializeField] private Deck _deck;
-    [SerializeField] private HandManager _playerHand;
-    [SerializeField] private HandManager _enemyHand;
     [SerializeField] private DeckViewManager _deckView;
 
-    private DeckInstance _deckInst;
+    [SerializeField] private DeckInstance _deckInst;
     public DeckInstance Deck => _deckInst;
+
+    [SerializeField] private bool _isReady = false;
+    public bool IsReady => _isReady;
+
+    [SerializeField] private bool _canInteract = true;
+    public bool CanInteract => _canInteract;
+
+    public void ToggleDeck(bool onOff)
+    {
+        _canInteract = onOff;
+        _deckView.ToggleWarning(onOff);
+    }
 
     private void Start()
     {
-        _deckInst = _deck.Instantiate();
-        _deckView.CreateDeck(_deckInst);
+        _deckView.ToggleWarning(false);
     }
 
-    public void GivePlayerCard()
+    public void InitializeDeck(Deck deck)
     {
+        _deckInst = deck.Instantiate();
+        _deckView.CreateDeck(_deckInst, () => _isReady = true);
+    }
+
+    public Rank GiveCard(HandManager hand, bool toPLayer)
+    {
+        if (!_isReady) return Rank.None;
+
         CardInstance card = _deckInst.GetCard();
 
-        if (card == null) return;
+        if (card == null) return Rank.None;
         
-        _deckView.RemoveCard(card, () => _playerHand.AddCard(card), true);
-    }
+        _deckView.RemoveCard(card, () => hand.AddCard(card), toPLayer);
 
-    [Button]
-    public void GiveEnemyCard()
-    {
-        CardInstance card = _deckInst.GetCard();
-
-        if (card == null) return;
-
-        _deckView.RemoveCard(card, () => _enemyHand.AddCard(card), false);
+        return card.Rank;
     }
 }
  

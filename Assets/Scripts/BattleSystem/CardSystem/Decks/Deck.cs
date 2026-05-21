@@ -27,7 +27,7 @@ public class DeckInstance
     [field: SerializeField, ShowAssetPreview] public Sprite DeckFront;
     [field: SerializeField, ShowAssetPreview] public Sprite DeckBack;
 
-    [SerializeField, ReorderableList] private List<CardInstance> _cards;
+    [field: SerializeField, ReorderableList] private List<CardInstance> _cards;
     public List<CardInstance> Cards => _cards;
 
     public DeckInstance(string name, Sprite front, Sprite back, List<Card> cards)
