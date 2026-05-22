@@ -9,6 +9,9 @@ public class PlayerController : BattlerController
     [SerializeField] private int _basePearlGain;
     public int PearGain => _basePearlGain + (5 * _landBought);
 
+    [SerializeField] private int _baseBigPearlGain;
+    public int BigPearGain => _baseBigPearlGain + (5 * _landBought);
+
     [SerializeField] private int _landBought;
     public int LandBought => _landBought;
 

@@ -29,7 +29,7 @@ public abstract class BattlerController : MonoBehaviour
         Battler.CurrentHp += heal;
     }
 
-    public void AddMult(int quantity, bool isFull)
+    public void AddMult(float quantity, bool isFull)
     {
         if (!isFull) quantity /= 2;
 

@@ -268,6 +268,10 @@ public class BattleManager : MonoBehaviour
                 if (caller is PlayerController player) player.AlterMoney(player.PearGain, isFull);
                 break;
 
+            case Hability.BigMoneyGain:
+                if (caller is PlayerController playerB) playerB.AlterMoney(playerB.BigPearGain, isFull);
+                break;
+
             case Hability.MultAdd:
                 caller.AddMult(1, isFull);
                 break;

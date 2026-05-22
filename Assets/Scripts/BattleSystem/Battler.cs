@@ -71,7 +71,7 @@ public class BattlerInstance
     [SerializeField] private float _mult = 1;
     public float Mult => _mult;
 
-    public void AddMult(int value)
+    public void AddMult(float value)
     {
         _mult += value;
     }
