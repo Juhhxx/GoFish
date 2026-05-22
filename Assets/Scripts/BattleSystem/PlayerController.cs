@@ -1,10 +1,14 @@
 using NaughtyAttributes;
 using UnityEngine;
 
-public class PlayerController : MonoBehaviour
+public class PlayerController : BattlerController
 {
     [SerializeField] private int _pearls;
     public int Pearls => _pearls;
+
+    [SerializeField] private int _landBought;
+    public int LandBought => _landBought;
+
     [Button]
     private void GetMoneyCheat()
     {
@@ -16,14 +20,13 @@ public class PlayerController : MonoBehaviour
         _pearls = 0;
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
-
     public void AlterMoney(int amount)
     {
         _pearls += amount;
+    }
+
+    private new void Start()
+    {
+        base.Start();
     }
 }

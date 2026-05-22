@@ -111,11 +111,11 @@ public class BattleManager : MonoBehaviour
     }
 
     public void PlayPeixinho(bool isFull)
-    {
-        foreach (CardInstance card in _playerHand.GetSelectedCards())
+    {        foreach (CardInstance card in _playerHand.GetSelectedCards())
         {
             _playerHand.RemoveCard(card);
         }
+        _playerHand.ClearSelection();
     }
 
     private bool _playerHasFished;
