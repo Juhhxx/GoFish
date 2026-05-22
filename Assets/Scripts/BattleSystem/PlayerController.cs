@@ -6,6 +6,9 @@ public class PlayerController : BattlerController
     [SerializeField] private int _pearls;
     public int Pearls => _pearls;
 
+    [SerializeField] private int _basePearlGain;
+    public int PearGain => _basePearlGain + (5 * _landBought);
+
     [SerializeField] private int _landBought;
     public int LandBought => _landBought;
 
@@ -20,13 +23,10 @@ public class PlayerController : BattlerController
         _pearls = 0;
     }
 
-    public void AlterMoney(int amount)
+    public void AlterMoney(int amount, bool isFull = true)
     {
-        _pearls += amount;
-    }
+        if (!isFull) amount /= 2;
 
-    private new void Start()
-    {
-        base.Start();
+        _pearls += amount;
     }
 }

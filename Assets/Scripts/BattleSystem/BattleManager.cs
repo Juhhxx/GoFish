@@ -4,12 +4,13 @@ using UnityEngine;
 
 public class BattleManager : MonoBehaviour
 {
+    [SerializeField] private PlayerController _playerController;
+    [SerializeField] private EnemyController _enemyController;
+
     [SerializeField] private Deck _deck;
     [SerializeField] private CardSettings _cardSettings;
 
     [SerializeField] private DeckManager _deckManager;
-    [SerializeField] private HandManager _playerHand;
-    [SerializeField] private HandManager _enemyHand;
 
     private BattleState _currentState = BattleState.Start;
 
@@ -34,7 +35,7 @@ public class BattleManager : MonoBehaviour
 
     private void Start()
     {
-        _playerHand.OnHandSelectionChanged += (_,_) => RefreshBattleState();
+        _playerController.HandManager.OnHandSelectionChanged += (_,_) => RefreshBattleState();
 
         StartBattle();
     }
@@ -56,7 +57,7 @@ public class BattleManager : MonoBehaviour
         {
             bool toPlayer = i % 2 == 0;
 
-            HandManager hand = toPlayer ? _playerHand : _enemyHand;
+            HandManager hand = toPlayer ? _playerController.HandManager : _enemyController.HandManager;
 
             _deckManager.GiveCard(hand, toPlayer);
 
@@ -66,15 +67,15 @@ public class BattleManager : MonoBehaviour
 
     public bool CanPlayerCall()
     {
-        return _playerHand.CanCall() && IsPlayerTurn() && _currentState != BattleState.PlayerFish;
+        return _playerController.HandManager.CanCall() && IsPlayerTurn() && _currentState != BattleState.PlayerFish;
     }
     public bool CanPlayerPlayHalfPeixinho()
     {
-        return _playerHand.HasHalfPeixinho() && IsPlayerTurn() && _currentState != BattleState.PlayerFish;
+        return _playerController.HandManager.HasHalfPeixinho() && IsPlayerTurn() && _currentState != BattleState.PlayerFish;
     }
     public bool CanPlayerPlayPeixinho()
     {
-        return _playerHand.HasPeixinho() && IsPlayerTurn() && _currentState != BattleState.PlayerFish;
+        return _playerController.HandManager.HasPeixinho() && IsPlayerTurn() && _currentState != BattleState.PlayerFish;
     }
 
     private bool _playerHasCalled = false;
@@ -84,9 +85,9 @@ public class BattleManager : MonoBehaviour
         if (!CanPlayerCall())
             return;
         
-        _playerCalledRank = _playerHand.GetCallRank();
+        _playerCalledRank = _playerController.HandManager.GetCallRank();
         _playerHasCalled = true;
-        _playerHand.ClearSelection();
+        _playerController.HandManager.ClearSelection();
     }
     private bool ResolveCall(HandManager caller, HandManager target, Rank rank)
     {
@@ -111,11 +112,18 @@ public class BattleManager : MonoBehaviour
     }
 
     public void PlayPeixinho(bool isFull)
-    {        foreach (CardInstance card in _playerHand.GetSelectedCards())
+    {
+        StartCoroutine(PlayPeixinhoCR());
+        DoRankHability(_playerController, _enemyController, _playerController.HandManager.GetPeixinhoRank(), isFull);
+    }
+    private IEnumerator PlayPeixinhoCR()
+    {
+        foreach (CardInstance card in _playerController.HandManager.GetSelectedCards())
         {
-            _playerHand.RemoveCard(card);
+            _playerController.HandManager.RemoveCard(card);
+            yield return new WaitForSeconds(0.5f);
         }
-        _playerHand.ClearSelection();
+        _playerController.HandManager.ClearSelection();
     }
 
     private bool _playerHasFished;
@@ -125,12 +133,14 @@ public class BattleManager : MonoBehaviour
         if (!_deckManager.CanInteract) return;
 
         _playerHasFished = true;
-        _playerFishedRank = _deckManager.GiveCard(_playerHand, true);
+        _playerFishedRank = _deckManager.GiveCard(_playerController.HandManager, true);
     }
 
     private IEnumerator BattleLoop()
     {
         _deckManager.InitializeDeck(_deck);
+        _deckManager.ToggleDeck(false);
+
 
         yield return new WaitUntil(() => _deckManager.IsReady);
         yield return new WaitForSeconds(0.5f);
@@ -143,11 +153,15 @@ public class BattleManager : MonoBehaviour
             {
                 Debug.Log("PlayerTurn");
                 yield return PlayerTurn();
+                Debug.Log($"Player : {_playerController.Battler.CurrentHp}, {_playerController.Battler.Damage} x {_playerController.Battler.Mult} = {_playerController.Battler.GetFinalDamage()}");
+                Debug.Log($"Enemy : {_enemyController.Battler.CurrentHp}, {_enemyController.Battler.Damage} x {_enemyController.Battler.Mult} = {_enemyController.Battler.GetFinalDamage()}");
             }
             else
             {
                 Debug.Log("EnemyTurn");
                 yield return EnemyTurn();
+                Debug.Log($"Player : {_playerController.Battler.CurrentHp}, {_playerController.Battler.Damage} x {_playerController.Battler.Mult} = {_playerController.Battler.GetFinalDamage()}");
+                Debug.Log($"Enemy : {_enemyController.Battler.CurrentHp}, {_enemyController.Battler.Damage} x {_enemyController.Battler.Mult} = {_enemyController.Battler.GetFinalDamage()}");
             }
         }
     }
@@ -166,7 +180,7 @@ public class BattleManager : MonoBehaviour
 
             Debug.Log($"PLAYER CALLED : {_playerCalledRank}");
 
-            bool success = ResolveCall(_playerHand, _enemyHand, _playerCalledRank);
+            bool success = ResolveCall(_playerController.HandManager, _enemyController.HandManager, _playerCalledRank);
 
             yield return new WaitForSeconds(0.5f);
 
@@ -197,7 +211,7 @@ public class BattleManager : MonoBehaviour
     {
         _currentState = BattleState.EnemyTurn;
 
-        yield return new WaitForSeconds(1f);
+        yield return new WaitForSeconds(2f);
 
         bool keepPlaying = true;
 
@@ -207,17 +221,17 @@ public class BattleManager : MonoBehaviour
 
             Debug.Log($"ENEMY CALLED : {rank}");
 
-            bool success = ResolveCall(_enemyHand, _playerHand, rank);
+            bool success = ResolveCall(_enemyController.HandManager, _playerController.HandManager, rank);
 
-            yield return new WaitForSeconds(0.5f);
+            yield return new WaitForSeconds(1f);
 
             if (!success)
             {
-                Rank drawnRank = _deckManager.GiveCard(_enemyHand, false);
+                Rank drawnRank = _deckManager.GiveCard(_enemyController.HandManager, false);
 
                 Debug.Log($"ENEMY : {rank} == {drawnRank} ? {rank == drawnRank}");
 
-                yield return new WaitForSeconds(0.5f);
+                yield return new WaitForSeconds(1f);
 
                 if (drawnRank != rank)
                 {
@@ -228,9 +242,42 @@ public class BattleManager : MonoBehaviour
 
         _currentTurn++;
     }
+
+    // Enemy Decisions (Temporary)
     private Rank ChooseEnemyRank()
     {
-        return _enemyHand.Hand[UnityEngine.Random.Range(0, _enemyHand.Hand.Count)].Rank;
+        return _enemyController.HandManager.Hand[UnityEngine.Random.Range(0, _enemyController.HandManager.Hand.Count)].Rank;
     }
     
+    // Peixinho Actions
+    private void DoRankHability(BattlerController caller, BattlerController target, Rank rank, bool isFull)
+    {
+        Hability hability = _cardSettings.GetHabilityByRank(rank);
+
+        switch (hability)
+        {
+            case Hability.Attack:
+                target.Damage(caller.Battler, isFull);
+                break;
+            
+            case Hability.Heal:
+                caller.Heal(target.Battler, isFull);
+                break;
+            
+            case Hability.MoneyGain:
+                if (caller is PlayerController player) player.AlterMoney(player.PearGain, isFull);
+                break;
+
+            case Hability.MultAdd:
+                caller.AddMult(1, isFull);
+                break;
+            
+            case Hability.MultMult:
+                caller.MultiplyMult(0.5f, isFull);
+                break;
+            
+            default:
+                break;
+        }
+    }
 }

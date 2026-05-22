@@ -8,8 +8,10 @@ public class Battler : ScriptableObject
     [field: SerializeField] public int HealthPoints;
     [field: SerializeField] public int Damage;
     [field: SerializeField] public int UpgradeBonus = 5;
+    [field: SerializeField] public int HPLevel;
+    [field: SerializeField] public int DMGLevel;
 
-    public BattlerInstance Instantiate(int levelHp, int levelDmg) => new BattlerInstance(DisplayName, HealthPoints, Damage, UpgradeBonus, levelHp, levelDmg);
+    public BattlerInstance Instantiate() => new BattlerInstance(DisplayName, HealthPoints, Damage, UpgradeBonus, HPLevel, DMGLevel);
 }
 
 [Serializable]
@@ -66,19 +68,19 @@ public class BattlerInstance
     private int _dmgLevel = 0;
 
 
-    [SerializeField] private int _mult = 0;
-    public int Mult => _mult;
+    [SerializeField] private float _mult = 1;
+    public float Mult => _mult;
 
     public void AddMult(int value)
     {
         _mult += value;
     }
-    public void MultiplyMult(int value)
+    public void MultiplyMult(float value)
     {
         _mult *= value;
     }
 
-    public int GetFinalDamage() => Damage * Mult;
+    public int GetFinalDamage() => (int)(Damage * Mult);
 
 
     public int Level => _hpLevel + _dmgLevel;
