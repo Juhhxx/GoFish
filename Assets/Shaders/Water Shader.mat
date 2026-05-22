@@ -53,14 +53,14 @@ Material:
     - _UIMaskSoftnessX: 1
     - _UIMaskSoftnessY: 1
     - _flow_speed: 0.25
-    - _foam_density: 4
+    - _foam_density: 8
     - _foam_speed: 0.2
-    - _foam_thickness: 5
+    - _foam_thickness: 4
     m_Colors:
     - _ClipRect: {r: 0, g: 0, b: 0, a: 0}
     - _flow_direction: {r: 0.1, g: 0.5, b: 0, a: 0}
     - _foam_color: {r: 0.49962977, g: 0.5050689, b: 0.78113204, a: 1}
-    - _water_color: {r: 0.23989235, g: 0.043137245, b: 0.5294118, a: 1}
+    - _water_color: {r: 0.043137245, g: 0.07768412, b: 0.5294118, a: 1}
   m_BuildTextureStacks: []
   m_AllowLocking: 1
 --- !u!114 &2044271535993913489

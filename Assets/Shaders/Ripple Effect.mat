@@ -40,6 +40,18 @@ Material:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
+    - _SampleTexture2D_05b9e6974e6b495996520c20b183a4a8_Texture_1_Texture2D:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _SampleTexture2D_153b8f20371b44d7ba8241fd2a2a41f6_Texture_1_Texture2D:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _SampleTexture2D_2aefeac278ab44129b57b6a2538a591a_Texture_1_Texture2D:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
     - unity_Lightmaps:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
@@ -54,11 +66,11 @@ Material:
         m_Offset: {x: 0, y: 0}
     m_Ints: []
     m_Floats:
-    - _ripple_amount: 0.3
-    - _ripple_speed: 0.6
-    - _ripple_strength: 0.6
+    - _ripple_amount: 2
+    - _ripple_speed: 0.9
+    - _ripple_strength: 0.8
     m_Colors:
     - White: {r: 1, g: 1, b: 1, a: 1}
-    - _ripple_center: {r: -20, g: -20, b: 0, a: 0}
+    - _ripple_center: {r: -20, g: 10, b: 0, a: 0}
   m_BuildTextureStacks: []
   m_AllowLocking: 1
