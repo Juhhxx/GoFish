@@ -67,10 +67,10 @@ Material:
     m_Ints: []
     m_Floats:
     - _ripple_amount: 2
-    - _ripple_speed: 0.9
-    - _ripple_strength: 0.8
+    - _ripple_speed: 0.6
+    - _ripple_strength: 0.4
     m_Colors:
     - White: {r: 1, g: 1, b: 1, a: 1}
-    - _ripple_center: {r: -20, g: 10, b: 0, a: 0}
+    - _ripple_center: {r: 0, g: 10, b: 0, a: 0}
   m_BuildTextureStacks: []
   m_AllowLocking: 1
