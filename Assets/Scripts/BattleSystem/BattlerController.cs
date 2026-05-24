@@ -7,7 +7,7 @@ public abstract class BattlerController : MonoBehaviour
     [SerializeField] private HandManager _handManager;
     public HandManager HandManager => _handManager;
 
-    private BattlerInstance _battlerInst;
+    [SerializeField] private BattlerInstance _battlerInst;
     public BattlerInstance Battler => _battlerInst;
 
     public void Awake()

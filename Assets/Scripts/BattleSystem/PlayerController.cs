@@ -1,3 +1,4 @@
+using System;
 using NaughtyAttributes;
 using UnityEngine;
 
@@ -26,10 +27,13 @@ public class PlayerController : BattlerController
         _pearls = 0;
     }
 
+    public event Action<int> OnMoneyChanged;
     public void AlterMoney(int amount, bool isFull = true)
     {
         if (!isFull) amount /= 2;
 
         _pearls += amount;
+
+        OnMoneyChanged?.Invoke(_pearls);
     }
 }

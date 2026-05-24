@@ -37,7 +37,7 @@ public class BattlerInstance
 
     [SerializeField] private int _baseHp;
     public int MaxHP => _baseHp + GetStatUpgradeBonus(BattlerStats.HP);
-    private int _hpLevel = 0;
+    [SerializeField] private int _hpLevel = 0;
 
     private int _currentHP;
     public int CurrentHp
@@ -52,7 +52,7 @@ public class BattlerInstance
             else if (value < 0) tmp = 0;
             else tmp = value;
 
-            if (_currentHP != tmp) OnHPChanged?.Invoke(tmp);
+            if (_currentHP != tmp) OnHPChanged?.Invoke(tmp, MaxHP);
 
             _currentHP = tmp;
 
@@ -60,28 +60,33 @@ public class BattlerInstance
         }
     }
 
-    public event Action<int> OnHPChanged;
+    public event Action<int, int> OnHPChanged;
     public event Action OnDead;
 
     [SerializeField] private int _baseDamage;
     public int Damage => _baseDamage + GetStatUpgradeBonus(BattlerStats.DMG);
-    private int _dmgLevel = 0;
+    [SerializeField] private int _dmgLevel = 0;
+    public event Action <int> OnDamageChanged;
 
 
     [SerializeField] private float _mult = 1;
     public float Mult => _mult;
+    public event Action<float> OnMultChanged;
 
     public void AddMult(float value)
     {
         _mult += value;
+
+        OnMultChanged?.Invoke(_mult);
     }
     public void MultiplyMult(float value)
     {
         _mult *= value;
+
+        OnMultChanged?.Invoke(_mult);
     }
 
     public int GetFinalDamage() => (int)(Damage * Mult);
-
 
     public int Level => _hpLevel + _dmgLevel;
 
@@ -91,10 +96,12 @@ public class BattlerInstance
         {
             case BattlerStats.HP:
                 _hpLevel += 1;
+                OnHPChanged?.Invoke(_currentHP, MaxHP);
                 break;
             
             case BattlerStats.DMG:
                 _dmgLevel += 1;
+                OnDamageChanged?.Invoke(Damage);
                 break;
         }
     }
@@ -102,17 +109,21 @@ public class BattlerInstance
     private int _levelUpgradeBonus = 5;
     private int GetStatUpgradeBonus(BattlerStats stat)
     {
+        int bonus = 0;
+
         switch (stat)
         {
             case BattlerStats.HP:
-                return _hpLevel * _levelUpgradeBonus;
+                bonus = _hpLevel * _levelUpgradeBonus;
+                break;
             
             case BattlerStats.DMG:
-                return _dmgLevel * _levelUpgradeBonus;
-            
-            default:
-                return 0;
+                bonus = _dmgLevel * _levelUpgradeBonus;
+                break;
         }
+
+        Debug.Log($"Bonus for {stat} : {bonus}");
+        return bonus;
     }
 }
 

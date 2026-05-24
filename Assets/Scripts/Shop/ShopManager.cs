@@ -1,6 +1,9 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
+using DG.Tweening;
 using NaughtyAttributes;
+using TMPro;
 using Unity.VisualScripting;
 using UnityEngine;
 
@@ -18,17 +21,39 @@ public class ShopManager : MonoBehaviour
     [SerializeField] private UnityEngine.UI.Button _healthUpgradeButton;
     [SerializeField] private UnityEngine.UI.Button _landPurchaseButton;
     [SerializeField] private PlayerController _playerController;
+    [SerializeField] private TextMeshProUGUI _playerMoneyTMP;
+    private int _curentPearls;
+
     public event Action<Card, int> OnCardBought;
     public event Action OnDMGUpgradeBought;
     public event Action OnHealthUpgradeBought;
     public event Action OnLandBought;
-    private int _upgradePrice;
-    private int _landPrice;
+    [SerializeField] private int _upgradePrice;
+    [SerializeField] private int _landPrice;
+
     private void Start()
     {
         _timer = new Timer(_refreshOffersTime);
         _timer.OnTimerDone += RefreshOffers;
         RefreshOffers();
+        UpgradeButtonSetup();
+        SetUpLandPurchase();
+
+        _playerController.OnMoneyChanged += UpdateMoneyUI;
+        _playerMoneyTMP.text = $"Pearls: {_playerController.Pearls}";
+        _curentPearls = _playerController.Pearls;
+
+        OnHealthUpgradeBought += () =>
+        {
+            _playerController.Battler.RaiseStatLevel(BattlerStats.HP);
+            _healthUpgradeButton.interactable = false;
+        };
+
+        OnDMGUpgradeBought += () =>
+        {
+            _playerController.Battler.RaiseStatLevel(BattlerStats.DMG);
+            _dmgUpgradeButton.interactable = false;
+        };
     }
 
     private void Update()
@@ -79,7 +104,10 @@ public class ShopManager : MonoBehaviour
     private void UpgradeButtonSetup()
     {
         _dmgUpgradeButton.onClick.AddListener(() => Buy(_upgradePrice, () => OnDMGUpgradeBought?.Invoke(), null));
+        _dmgUpgradeButton.GetComponentInChildren<TextMeshProUGUI>().text = $"Damage Upgrade\n({_upgradePrice}p)";
+
         _healthUpgradeButton.onClick.AddListener(() => Buy(_upgradePrice, () => OnHealthUpgradeBought?.Invoke(), null));
+        _healthUpgradeButton.GetComponentInChildren<TextMeshProUGUI>().text = $"Health Upgrade\n({_upgradePrice}p)";
     }
 
     private void SetUpLandPurchase()
@@ -99,5 +127,33 @@ public class ShopManager : MonoBehaviour
             onBrokeAss?.Invoke();
             Debug.Log("BROKE");
         }
+    }
+
+    private void UpdateMoneyUI(int money)
+    {
+        if (_updateMoneyCR != null) StopCoroutine(_updateMoneyCR);
+
+        _updateMoneyCR = StartCoroutine(UpdateMoneyCR(money));
+    }
+    private Coroutine _updateMoneyCR = null;
+    private float _waitTime = 0.1f;
+    private IEnumerator UpdateMoneyCR(int targetValue)
+    {
+        while (_curentPearls != targetValue)
+        {
+            int distance = Mathf.Abs(targetValue - _curentPearls);
+
+            int step = Mathf.Max(1, distance / 5);
+
+            if (_curentPearls < targetValue) _curentPearls += step;
+            else if (_curentPearls > targetValue) _curentPearls -= step;
+
+            _playerMoneyTMP.text = "Pearls: " + _curentPearls;
+            _playerMoneyTMP.transform.DOScale(Vector3.one * 1.25f, 0.1f).OnComplete(() => _playerMoneyTMP.transform.DOScale(Vector3.one, 0.1f));
+
+            yield return new WaitForSeconds(_waitTime);
+        }
+
+        _updateMoneyCR = null;
     }
 }

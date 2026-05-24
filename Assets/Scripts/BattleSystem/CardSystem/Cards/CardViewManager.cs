@@ -114,7 +114,7 @@ public class CardViewManager : MonoBehaviour
     public void DoPeixinhoAnim()
     {
         transform.DOKill();
-        transform.DOShakeRotation(0.2f, _peixinhoShakeAmount, randomness: 0).SetLoops(-1);
+        transform.DOShakeRotation(0.2f, _peixinhoShakeAmount, randomness: 50).SetLoops(-1);
         transform.DOScale(Vector3.one * _callScaleAmount, _tweenHoverDuration);
     }
 

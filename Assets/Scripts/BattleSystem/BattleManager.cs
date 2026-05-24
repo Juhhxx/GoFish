@@ -5,7 +5,11 @@ using UnityEngine;
 public class BattleManager : MonoBehaviour
 {
     [SerializeField] private PlayerController _playerController;
+    public BattlerInstance Player => _playerController.Battler;
+
     [SerializeField] private EnemyController _enemyController;
+    public BattlerInstance Enemy => _enemyController.Battler;
+
 
     [SerializeField] private Deck _deck;
     [SerializeField] private CardSettings _cardSettings;
@@ -168,6 +172,7 @@ public class BattleManager : MonoBehaviour
 
     private IEnumerator PlayerTurn()
     {
+        RefreshBattleState();
         bool keepPlaying = true;
 
         while (keepPlaying)
