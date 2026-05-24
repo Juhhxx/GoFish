@@ -17,6 +17,7 @@ public class BattleViewManager : MonoBehaviour
     [SerializeField] private Image _enemyHpBar;
     [SerializeField] private TextMeshProUGUI _enemyDmgTmp;
     [SerializeField] private TextMeshProUGUI _enemyDmgMultTmp;
+    [SerializeField] private EnemySpeechBubbleManager _speechBubble;
 
 
     [SerializeField] private UnityEngine.UI.Button _callButton;
