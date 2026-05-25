@@ -102,11 +102,33 @@ public class HandManager : MonoBehaviour
                 card.Rank == _selectedCards[0].Rank);
     }
 
+    public bool HasHalfPeixinho(out List<List<CardInstance>> groups)
+    {
+        groups = _hand
+            .GroupBy(card => card.Rank)
+            .Where(group => group.Count() == 2)
+            .Select(group => group.ToList())
+            .ToList();
+
+        return groups.Count > 0;
+    }
+
     public bool HasPeixinho()
     {
         return _selectedCards.Count == 4 &&
             _selectedCards.All(card =>
                 card.Rank == _selectedCards[0].Rank);
+    }
+
+    public bool HasPeixinho(out List<List<CardInstance>> groups)
+    {
+        groups = _hand
+            .GroupBy(card => card.Rank)
+            .Where(group => group.Count() == 4)
+            .Select(group => group.ToList())
+            .ToList();
+
+        return groups.Count > 0;
     }
 
     public Rank GetPeixinhoRank()

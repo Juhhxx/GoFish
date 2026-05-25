@@ -1,5 +1,4 @@
 using UnityEngine;
-using UnityEngine.XR;
 
 public class EnemyController : BattlerController
 {
@@ -11,12 +10,19 @@ public class EnemyController : BattlerController
 
     public bool DecideDoPeixinho()
     {
-        if (HandManager.HasPeixinho()) return true;
-        if (HandManager.HasHalfPeixinho()) return 
+        if (HandManager.HasPeixinho(out var peixinhos))
+        {
+            return true;
+        }
+        if (HandManager.HasHalfPeixinho())
+        {
+            return Random.Range(0f, 1.0f) < 0.5f;
+        }
+        else return false;
     }
 
     public Rank DoPeixinho()
     {
-        
+        return Rank.None;
     }
 }
