@@ -18,6 +18,8 @@ public class KeymashManager : MonoBehaviour
     [SerializeField] private float _winThreshold = 10;
     [SerializeField] private float _enemyGain = 0.2f;
     [SerializeField] private float _enemySpeed = 0.1f;
+    [SerializeField] private float _shakeIntensity = 50f;
+    [SerializeField] private RectTransform _shakeTarget;
     [SerializeField] private Image _progressSlider;
     [SerializeField] private RectTransform _sliderTransform;
     [SerializeField] private Transform _layoutGroup;
@@ -33,7 +35,19 @@ public class KeymashManager : MonoBehaviour
     }
     public void StartMinigame(string givenWord)
     {
+        for (int i = 0; i < _spawnedKeyImages.Count; i++) 
+        {
+            _spawnedKeyImages[i].DOKill();
+            Destroy(_spawnedKeys[i]);
+        }
+        _spawnedKeys.Clear();
+        _spawnedKeyImages.Clear();
+        _playerScore = _winThreshold/2;
+        _letterIndex = 0;
+        _hasEnded = false;
+
         _spamWord = givenWord;
+        
         UpdateKeyToPress();
         UpdateKeyUI();
         StartCoroutine(KeySmashSequence());
@@ -55,6 +69,8 @@ public class KeymashManager : MonoBehaviour
         if (Input.GetKeyDown(_keyToPress) && !_hasEnded)
         {
             ProceedLetter();
+            _shakeTarget.DOAnchorPos(Vector3.zero, 0.1f);
+            _shakeTarget.DOShakePosition(0.2f, new Vector3(_shakeIntensity, _shakeIntensity, 0));
         }
         _progressSlider.fillAmount = Mathf.Clamp01(_playerScore / _winThreshold);
     }
