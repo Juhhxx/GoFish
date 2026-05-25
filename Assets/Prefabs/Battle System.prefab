@@ -266,8 +266,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0.30000004, y: 0}
-  m_SizeDelta: {x: -0.7999999, y: -0.19999996}
+  m_AnchoredPosition: {x: 0.25000003, y: 0}
+  m_SizeDelta: {x: -0.90000004, y: -0.19999996}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &6640191535986633012
 CanvasRenderer:
@@ -299,15 +299,15 @@ MonoBehaviour:
       m_Calls: []
   m_text: GO FISH!
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 2e498d1c8094910479dc3e1b768306a4, type: 2}
-  m_sharedMaterial: {fileID: 2180264, guid: 2e498d1c8094910479dc3e1b768306a4, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 9dd53765c8e0ca745a24bacd6023d382, type: 2}
+  m_sharedMaterial: {fileID: -3240909202249834766, guid: 9dd53765c8e0ca745a24bacd6023d382, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
-    rgba: 4278190080
-  m_fontColor: {r: 0, g: 0, b: 0, a: 1}
+    rgba: 4281677109
+  m_fontColor: {r: 0.20754719, g: 0.20754719, b: 0.20754719, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
   m_fontColorGradient:
@@ -324,13 +324,13 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 0.4
-  m_fontSizeBase: 0.4
+  m_fontSize: 0.3
+  m_fontSizeBase: 0.3
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
   m_fontSizeMax: 72
-  m_fontStyle: 1
+  m_fontStyle: 0
   m_HorizontalAlignment: 2
   m_VerticalAlignment: 512
   m_textAlignment: 65535
@@ -381,6 +381,8 @@ GameObject:
   - component: {fileID: 5798872893530686894}
   - component: {fileID: 8141373597244206049}
   - component: {fileID: 4826017113335889338}
+  - component: {fileID: 5493109702607418490}
+  - component: {fileID: 3721309798655104888}
   m_Layer: 0
   m_Name: Enemy Speech Bubble
   m_TagString: Untagged
@@ -472,6 +474,35 @@ MonoBehaviour:
   m_BlockingMask:
     serializedVersion: 2
     m_Bits: 4294967295
+--- !u!225 &5493109702607418490
+CanvasGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1008743126134183818}
+  m_Enabled: 1
+  m_Alpha: 0
+  m_Interactable: 0
+  m_BlocksRaycasts: 0
+  m_IgnoreParentGroups: 0
+--- !u!114 &3721309798655104888
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1008743126134183818}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 18ee32a1622f9914cb204e510e11923a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EnemySpeechBubbleManager
+  _canvasGroup: {fileID: 5493109702607418490}
+  _rectTrans: {fileID: 5802970742744241699}
+  _speechTmp: {fileID: 37284414584094931}
+  _tweenSpeed: 0.25
+  _textSpeed: 0.02
 --- !u!1 &1044706328576430997
 GameObject:
   m_ObjectHideFlags: 0
@@ -717,7 +748,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Image
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Color: {r: 0.509434, g: 0.509434, b: 0.509434, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -1497,7 +1528,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::DeckViewManager
   _cardPrefab: {fileID: 2789597707321526960, guid: 1ca8ce5a6d8b65f48874945de24e32c3, type: 3}
   _warning: {fileID: 4910086365441222825}
-  _deckDropHeight: 1.5
+  _deckDropHeight: 1
   _deckDropAnimationTime: 0.025
   _giveCardsAnimationTime: 0.3
   _playerGiveCardPivot: {fileID: 1208104140992419028}
@@ -2415,6 +2446,7 @@ MonoBehaviour:
   _enemyHpBar: {fileID: 3570363141649206236}
   _enemyDmgTmp: {fileID: 2179518316031867035}
   _enemyDmgMultTmp: {fileID: 5747515479042041689}
+  _speechBubble: {fileID: 3721309798655104888}
   _callButton: {fileID: 1635133993354756312}
   _pexButton: {fileID: 2546819967499536601}
   _halfPexButton: {fileID: 4012162379486699423}
@@ -4553,7 +4585,7 @@ Transform:
   m_GameObject: {fileID: 6932173525534435091}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.5, y: 0.2, z: -10}
+  m_LocalPosition: {x: 0.52, y: 0.2, z: -10}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -4742,16 +4774,16 @@ RectTransform:
   m_GameObject: {fileID: 7476703663367363172}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: -1, y: 1, z: 1}
+  m_LocalScale: {x: 0, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 6727572359282269485}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 1, y: 1}
+  m_AnchorMin: {x: 0, y: 0.5}
+  m_AnchorMax: {x: 0, y: 0.5}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 0}
-  m_Pivot: {x: 0.5, y: 0.5}
+  m_SizeDelta: {x: 3.5, y: 2}
+  m_Pivot: {x: 0, y: 0.5}
 --- !u!222 &5783260136334948517
 CanvasRenderer:
   m_ObjectHideFlags: 0

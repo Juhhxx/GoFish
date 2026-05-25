@@ -83,7 +83,7 @@ MonoBehaviour:
   _callMoveAmount: {x: 0, y: 0.25, z: -0.3}
   _peixinhoShakeAmount: {x: 0, y: 0, z: 3}
   _tweenHoverDuration: 0.2
-  _tweenDeckSpawnDuration: 0.05
+  _tweenDeckSpawnDuration: 0.1
   _tweenOutlineChangeDuration: 0.2
   _tweenCallDuration: 0.2
 --- !u!114 &8104548052100853533

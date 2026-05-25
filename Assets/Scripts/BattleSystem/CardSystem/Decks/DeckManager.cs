@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using UnityEngine;
 
 public class DeckManager : MonoBehaviour
@@ -42,6 +43,21 @@ public class DeckManager : MonoBehaviour
         _deckView.RemoveCard(card, () => hand.AddCard(card), toPLayer);
 
         return card.Rank;
+    }
+
+    public void InsertCards(CardInstance card, int number)
+    {
+        StartCoroutine(InsertCardsCR(card, number));
+    }
+
+    private IEnumerator InsertCardsCR(CardInstance card, int number)
+    {
+        for (int i = 0; i < number; i++)
+        {
+            _deckInst.InsertCard(card);
+            _deckView.AddCard(card);
+            yield return new WaitForSeconds(0.1f);
+        }
     }
 }
  

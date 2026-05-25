@@ -44,6 +44,9 @@ public class BattleViewManager : MonoBehaviour
         _pexButton.interactable = false;
         _halfPexButton.interactable = false;
 
+        // Enemy Speech
+        _battleManager.OnEnemyAction += _speechBubble.ToggleBubble;
+
         // UI Buttons
         _battleManager.OnBattleStateChanged += RefreshBattleUI;
 

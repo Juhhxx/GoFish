@@ -39,22 +39,7 @@ public class DeckViewManager : MonoBehaviour
 
         foreach (CardInstance c in deck.Cards)
         {
-            var card = Instantiate(_cardPrefab, transform);
-            card.transform.localPosition = new Vector3(0f, _deckDropHeight, 0f);
-            card.transform.rotation = Quaternion.Euler(-90f, 180f, 0f);
-
-            Vector3 finalPos = new Vector3(0f, 0.005f * i, 0f);
-
-            CardViewManager view = card.GetComponent<CardViewManager>();
-
-            view?.SetUpCard(c);
-            view?.DoCardMoveAnim(finalPos);
-
-            _createdCards.Add(view);
-
-            SpriteRenderer[] sprs = card.GetComponentsInChildren<SpriteRenderer>();
-            foreach (SpriteRenderer spr in sprs) spr.sortingOrder = -1;
-            i++;
+            AddCard(c);
 
             yield return new WaitForSeconds(_deckDropAnimationTime);
         }
@@ -74,6 +59,25 @@ public class DeckViewManager : MonoBehaviour
 
         view.transform.DOMove(pos, _giveCardsAnimationTime).OnComplete(() => onEnd?.Invoke());
 
+    }
+
+    public void AddCard(CardInstance c)
+    {
+        var card = Instantiate(_cardPrefab, transform);
+        card.transform.localPosition = new Vector3(0f, _deckDropHeight, 0f);
+        card.transform.rotation = Quaternion.Euler(-90f, 180f, 0f);
+
+        Vector3 finalPos = new Vector3(0f, 0.005f * (_createdCards.Count - 1), 0f);
+
+        CardViewManager view = card.GetComponent<CardViewManager>();
+
+        view?.SetUpCard(c);
+        view?.DoCardMoveAnim(finalPos);
+
+        _createdCards.Add(view);
+
+        SpriteRenderer[] sprs = card.GetComponentsInChildren<SpriteRenderer>();
+        foreach (SpriteRenderer spr in sprs) spr.sortingOrder = -1;
     }
 
     public void ToggleWarning(bool onOff)

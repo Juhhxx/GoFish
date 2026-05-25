@@ -25,6 +25,15 @@ public class CardSettings : ScriptableObject
         }
         return 0;
     }
+    public string GetRankName(Rank rank)
+    {
+        foreach (RankHability rh in _rankHabilities)
+        {
+            if (rh.Rank == rank) return rh.Name;
+        }
+
+        return "";
+    }
 }
 
 [System.Serializable]
@@ -32,6 +41,7 @@ public struct RankHability
 {
     public Rank Rank;
     public Hability Hability;
+    public string Name;
 }
 [System.Serializable]
 public struct HabilityValue

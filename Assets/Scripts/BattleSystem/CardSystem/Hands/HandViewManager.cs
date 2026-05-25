@@ -113,7 +113,10 @@ public class HandViewManager : MonoBehaviour
             {
                 _cardViews.RemoveAt(i);
 
-                Destroy(view.gameObject);
+                var pos = view.transform.localPosition;
+                pos.y = -2.5f;
+
+                view.DoCardMoveAnim(pos, () => Destroy(view.gameObject));
             }
         }
     }

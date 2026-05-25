@@ -15,30 +15,43 @@ MonoBehaviour:
   _rankHabilities:
   - Rank: 0
     Hability: 2
+    Name: Twos
   - Rank: 1
     Hability: 2
+    Name: Threes
   - Rank: 2
     Hability: 2
+    Name: Fours
   - Rank: 3
     Hability: 2
+    Name: Fives
   - Rank: 4
     Hability: 4
+    Name: Sixes
   - Rank: 5
     Hability: 5
+    Name: Sevens
   - Rank: 6
     Hability: 1
+    Name: Eights
   - Rank: 7
     Hability: 1
+    Name: Nines
   - Rank: 8
     Hability: 3
+    Name: Tens
   - Rank: 9
     Hability: 0
+    Name: Jacks
   - Rank: 10
     Hability: 0
+    Name: Queens
   - Rank: 11
     Hability: 0
+    Name: Kings
   - Rank: 12
     Hability: 0
+    Name: Aces
   _habilityValues:
   - Value: 2
     Hability: 0

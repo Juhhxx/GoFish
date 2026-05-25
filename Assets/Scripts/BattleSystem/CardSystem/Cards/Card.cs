@@ -33,17 +33,17 @@ public class CardInstance : IComparable<CardInstance>
     public Sprite BackImage { get; private set; }
 
     public int CompareTo(CardInstance other)
-{
-    if (other == null)
-        return 1;
+    {
+        if (other == null)
+            return 1;
 
-    int rankComparison = other.Rank.CompareTo(Rank);
+        int rankComparison = other.Rank.CompareTo(Rank);
 
-    if (rankComparison != 0)
-        return rankComparison;
+        if (rankComparison != 0)
+            return rankComparison;
 
-    return Suit.CompareTo(other.Suit);
-}
+        return Suit.CompareTo(other.Suit);
+    }
 
     public CardInstance(Rank rank, Suit suit, string name, Sprite display, Sprite front, Sprite back)
     {

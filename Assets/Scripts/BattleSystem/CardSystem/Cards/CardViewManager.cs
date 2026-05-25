@@ -72,10 +72,10 @@ public class CardViewManager : MonoBehaviour
 
     // Animations
 
-    public void DoCardMoveAnim(Vector3 finalPos)
+    public void DoCardMoveAnim(Vector3 finalPos, Action onEnd = null)
     {
         transform.DOKill();
-        transform.DOLocalMove(finalPos, _tweenDeckSpawnDuration);
+        transform.DOLocalMove(finalPos, _tweenDeckSpawnDuration).OnComplete(() => onEnd?.Invoke());
     }
 
     public void DoCardHoverAnim()

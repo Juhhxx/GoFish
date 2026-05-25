@@ -10,6 +10,7 @@ using UnityEngine;
 public class ShopManager : MonoBehaviour
 {
     [SerializeField] private Deck _currentDeck;
+    [SerializeField] private DeckManager _deckManager;
     [SerializeField] private GameObject _cardOfferPrefab;
     [SerializeField] private List<RectTransform> _offerPivot = new List<RectTransform>();
     private List<GameObject> _pastOffers = new List<GameObject>();
@@ -24,7 +25,7 @@ public class ShopManager : MonoBehaviour
     [SerializeField] private TextMeshProUGUI _playerMoneyTMP;
     private int _curentPearls;
 
-    public event Action<Card, int> OnCardBought;
+    public event Action<CardInstance, int> OnCardBought;
     public event Action OnDMGUpgradeBought;
     public event Action OnHealthUpgradeBought;
     public event Action OnLandBought;
@@ -42,6 +43,8 @@ public class ShopManager : MonoBehaviour
         _playerController.OnMoneyChanged += UpdateMoneyUI;
         _playerMoneyTMP.text = $"Pearls: {_playerController.Pearls}";
         _curentPearls = _playerController.Pearls;
+
+        OnCardBought += _deckManager.InsertCards;
 
         OnHealthUpgradeBought += () =>
         {
@@ -86,14 +89,20 @@ public class ShopManager : MonoBehaviour
     {
         int offerCardAmount = UnityEngine.Random.Range(1, 4)* 2;
 
-        Card offerCard = _currentDeck.GetRandomCard();
+        CardInstance offerCard = _currentDeck.GetRandomCard().Instantiate(_currentDeck.Instantiate());
         int offerCardValue = _cardSettings.GetValueByRank(offerCard.Rank);
         
         int price = CalculatePrice(offerCardValue, offerCardAmount);
 
         shopOfferManager.OfferSetUp(price, offerCardAmount, offerCard.DisplayImage);
 
-        offerButton.onClick.AddListener(() => Buy(price, () => OnCardBought?.Invoke(offerCard, offerCardAmount), null));
+        offerButton.onClick.AddListener(() => Buy(price, 
+                                        () =>
+                                        {
+                                            OnCardBought?.Invoke(offerCard, offerCardAmount);
+                                            offerButton.interactable = false;
+                                        }, 
+                                        null));
     }
 
     private int CalculatePrice(int givenValue, int givenAmount)

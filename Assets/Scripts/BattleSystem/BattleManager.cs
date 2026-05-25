@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class BattleManager : MonoBehaviour
@@ -29,6 +30,7 @@ public class BattleManager : MonoBehaviour
     public event Action OnBattleStateChanged;
     public event Action OnPlayerFished;
     public event Action<bool> OnPlayerCall;
+    public event Action<string> OnEnemyAction;
 
     private int _currentTurn = 0;
     public bool IsPlayerTurn()
@@ -68,6 +70,18 @@ public class BattleManager : MonoBehaviour
             yield return new WaitForSeconds(0.2f);
         }
     }
+    private IEnumerator RefilCardsCR(bool toPlayer)
+    {
+        for (int i = 0; i < _initialCards; i++)
+        {
+            HandManager hand = toPlayer ? _playerController.HandManager : _enemyController.HandManager;
+
+            _deckManager.GiveCard(hand, toPlayer);
+
+            yield return new WaitForSeconds(0.2f);
+        }
+    }
+
 
     public bool CanPlayerCall()
     {
@@ -128,6 +142,10 @@ public class BattleManager : MonoBehaviour
             yield return new WaitForSeconds(0.5f);
         }
         _playerController.HandManager.ClearSelection();
+        
+        OnEnemyAction?.Invoke($"Interesting play...");
+        yield return new WaitForSeconds(2.5f);
+        OnEnemyAction?.Invoke("");
     }
 
     private bool _playerHasFished;
@@ -138,6 +156,7 @@ public class BattleManager : MonoBehaviour
 
         _playerHasFished = true;
         _playerFishedRank = _deckManager.GiveCard(_playerController.HandManager, true);
+        OnEnemyAction?.Invoke($"");
     }
 
     private IEnumerator BattleLoop()
@@ -156,16 +175,18 @@ public class BattleManager : MonoBehaviour
             if (IsPlayerTurn())
             {
                 Debug.Log("PlayerTurn");
+                OnEnemyAction?.Invoke($"Your turn...");
+                yield return new WaitForSeconds(1.5f);
+                OnEnemyAction?.Invoke("");
                 yield return PlayerTurn();
-                Debug.Log($"Player : {_playerController.Battler.CurrentHp}, {_playerController.Battler.Damage} x {_playerController.Battler.Mult} = {_playerController.Battler.GetFinalDamage()}");
-                Debug.Log($"Enemy : {_enemyController.Battler.CurrentHp}, {_enemyController.Battler.Damage} x {_enemyController.Battler.Mult} = {_enemyController.Battler.GetFinalDamage()}");
             }
             else
             {
                 Debug.Log("EnemyTurn");
+                OnEnemyAction?.Invoke($"My turn.");
+                yield return new WaitForSeconds(1.5f);
+                OnEnemyAction?.Invoke("");
                 yield return EnemyTurn();
-                Debug.Log($"Player : {_playerController.Battler.CurrentHp}, {_playerController.Battler.Damage} x {_playerController.Battler.Mult} = {_playerController.Battler.GetFinalDamage()}");
-                Debug.Log($"Enemy : {_enemyController.Battler.CurrentHp}, {_enemyController.Battler.Damage} x {_enemyController.Battler.Mult} = {_enemyController.Battler.GetFinalDamage()}");
             }
         }
     }
@@ -174,6 +195,11 @@ public class BattleManager : MonoBehaviour
     {
         RefreshBattleState();
         bool keepPlaying = true;
+
+        if (_playerController.HandManager.Hand.Count == 0)
+        {
+            yield return RefilCardsCR(true);
+        }
 
         while (keepPlaying)
         {
@@ -191,6 +217,8 @@ public class BattleManager : MonoBehaviour
 
             if (!success)
             {
+                OnEnemyAction?.Invoke($"Go fish.");
+
                 _currentState = BattleState.PlayerFish;
 
                 _playerHasFished = false;
@@ -206,6 +234,13 @@ public class BattleManager : MonoBehaviour
                 bool fishedRequestedRank = _playerFishedRank == _playerCalledRank;
 
                 keepPlaying = fishedRequestedRank;
+
+                if (keepPlaying)
+                {
+                    OnEnemyAction?.Invoke($"Tsk...");
+                    yield return new WaitForSeconds(2.5f);
+                    OnEnemyAction?.Invoke("");
+                }
             }
         }
 
@@ -218,6 +253,14 @@ public class BattleManager : MonoBehaviour
 
         yield return new WaitForSeconds(2f);
 
+        if (_enemyController.HandManager.Hand.Count == 0)
+        {
+            OnEnemyAction?.Invoke($"Trust the heart of the cards.");
+            yield return new WaitForSeconds(2.5f);
+            OnEnemyAction?.Invoke("");
+            yield return RefilCardsCR(false);
+        }
+
         bool keepPlaying = true;
 
         while (keepPlaying)
@@ -225,10 +268,13 @@ public class BattleManager : MonoBehaviour
             Rank rank = ChooseEnemyRank();
 
             Debug.Log($"ENEMY CALLED : {rank}");
+            string rankname = _cardSettings.GetRankName(rank);
+            OnEnemyAction?.Invoke($"<b><color=#{Color.maroon.ToHexString()}>{rankname}</color></b>,\nyou got any?");
+            yield return new WaitForSeconds(2.5f);
 
             bool success = ResolveCall(_enemyController.HandManager, _playerController.HandManager, rank);
 
-            yield return new WaitForSeconds(1f);
+            OnEnemyAction?.Invoke("");
 
             if (!success)
             {
@@ -236,13 +282,28 @@ public class BattleManager : MonoBehaviour
 
                 Debug.Log($"ENEMY : {rank} == {drawnRank} ? {rank == drawnRank}");
 
-                yield return new WaitForSeconds(1f);
-
                 if (drawnRank != rank)
                 {
-                    keepPlaying = false;
+                    OnEnemyAction?.Invoke($"What a shame...");
+                    yield return new WaitForSeconds(2.5f);
+                    OnEnemyAction?.Invoke("");
+                    keepPlaying = false;    
+                }
+                else
+                {
+                    OnEnemyAction?.Invoke($"I got the <b><color=#{Color.maroon.ToHexString()}>{rank}</color></b> I was looking for...");
+                    yield return new WaitForSeconds(2.5f);
+                    OnEnemyAction?.Invoke("");
                 }
             }
+            else
+            {
+                OnEnemyAction?.Invoke($"Thank you\nhehehe...");
+                yield return new WaitForSeconds(2.5f);
+                OnEnemyAction?.Invoke("");
+            }
+
+            yield return new WaitForSeconds(1.5f);
         }
 
         _currentTurn++;

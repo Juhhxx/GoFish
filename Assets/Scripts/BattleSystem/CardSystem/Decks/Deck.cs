@@ -56,4 +56,11 @@ public class DeckInstance
         if (_cards.TryPop(out card)) return card;
         return null;
     }
+
+    public void InsertCard(CardInstance card)
+    {
+        int rnd = UnityEngine.Random.Range(0, _cards.Count);
+
+        _cards.Insert(rnd, card);
+    }
 }

@@ -759,17 +759,6 @@ Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 2b54d170e3c9ce54b86f7f0ef15f6c34, type: 3}
   m_PrefabInstance: {fileID: 358028996}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &374528412 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 5393417817829183852, guid: 9cf796da77ea3b14eb01773e785ed15c, type: 3}
-  m_PrefabInstance: {fileID: 1257235199327820300}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Unity.TextMeshPro::TMPro.TextMeshProUGUI
 --- !u!1001 &378554214
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -2252,6 +2241,17 @@ Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: d8592a66c727981408905fc3722b4676, type: 3}
   m_PrefabInstance: {fileID: 1505981853}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &1583261158 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 5938795830174374671, guid: 9cf796da77ea3b14eb01773e785ed15c, type: 3}
+  m_PrefabInstance: {fileID: 1257235199327820300}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8d5f2d4f65f82da478ce786d1920f9be, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::DeckManager
 --- !u!1 &1678210634
 GameObject:
   m_ObjectHideFlags: 0
@@ -3178,10 +3178,6 @@ PrefabInstance:
       propertyPath: m_Camera
       value: 
       objectReference: {fileID: 330585545}
-    - target: {fileID: 1218634277606853078, guid: 9cf796da77ea3b14eb01773e785ed15c, type: 3}
-      propertyPath: _playerDmgTmp
-      value: 
-      objectReference: {fileID: 374528412}
     - target: {fileID: 5798872893530686894, guid: 9cf796da77ea3b14eb01773e785ed15c, type: 3}
       propertyPath: m_Camera
       value: 
@@ -3265,10 +3261,6 @@ PrefabInstance:
     - target: {fileID: 7091303229129719736, guid: 9cf796da77ea3b14eb01773e785ed15c, type: 3}
       propertyPath: m_AnchoredPosition.y
       value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 7212458554159947577, guid: 9cf796da77ea3b14eb01773e785ed15c, type: 3}
-      propertyPath: _baseBigPearlGain
-      value: 10
       objectReference: {fileID: 0}
     - target: {fileID: 7571017002116693684, guid: 9cf796da77ea3b14eb01773e785ed15c, type: 3}
       propertyPath: m_AnchorMax.y
@@ -3429,6 +3421,10 @@ PrefabInstance:
       propertyPath: m_Colors.m_DisabledColor.a
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 9049935248846785553, guid: be631457cb3380d43aca038e99059a48, type: 3}
+      propertyPath: _deckManager
+      value: 
+      objectReference: {fileID: 1583261158}
     - target: {fileID: 9049935248846785553, guid: be631457cb3380d43aca038e99059a48, type: 3}
       propertyPath: _playerMoneyTMP
       value: 
