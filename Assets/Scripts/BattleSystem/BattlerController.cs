@@ -19,7 +19,7 @@ public abstract class BattlerController : MonoBehaviour
     {
         int damage = isFull ? battler.GetFinalDamage() : battler.GetFinalDamage() / 2;
 
-        damage = Mathf.Min(1, damage);
+        damage = Mathf.Max(1, damage);
 
         Battler.CurrentHp -= damage;
     }
@@ -28,7 +28,7 @@ public abstract class BattlerController : MonoBehaviour
     {
         int heal = isFull ? battler.GetFinalDamage() : battler.GetFinalDamage() / 2;
 
-        heal = Mathf.Min(1, heal);
+        heal = Mathf.Max(1, heal);
 
         Battler.CurrentHp += heal;
     }
