@@ -13,8 +13,8 @@ MonoBehaviour:
   m_Name: Enemy1
   m_EditorClassIdentifier: Assembly-CSharp::Battler
   DisplayName: "Mar\xE9e Noire"
-  HealthPoints: 20
-  Damage: 2
+  HealthPoints: 10
+  Damage: 4
   UpgradeBonus: 5
   HPLevel: 0
   DMGLevel: 0
