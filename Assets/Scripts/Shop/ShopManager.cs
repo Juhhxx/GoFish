@@ -23,6 +23,7 @@ public class ShopManager : MonoBehaviour
     [SerializeField] private UnityEngine.UI.Button _landPurchaseButton;
     [SerializeField] private PlayerController _playerController;
     [SerializeField] private TextMeshProUGUI _playerMoneyTMP;
+    [SerializeField] private TextMeshProUGUI _landBuyDisplayTMP;
     private int _curentPearls;
 
     public event Action<CardInstance, int> OnCardBought;
@@ -57,6 +58,8 @@ public class ShopManager : MonoBehaviour
             _playerController.Battler.RaiseStatLevel(BattlerStats.DMG);
             _dmgUpgradeButton.interactable = false;
         };
+
+        OnLandBought += () => _landPurchaseButton.interactable = false;
     }
 
     private void Update()
@@ -122,6 +125,7 @@ public class ShopManager : MonoBehaviour
     private void SetUpLandPurchase()
     {
         _landPurchaseButton.onClick.AddListener(() => Buy(_landPrice, () => OnLandBought?.Invoke(), null));
+        _landBuyDisplayTMP.text = _landPrice + "p";
     }
 
     private void Buy(int price, Action onBuy, Action onBrokeAss)

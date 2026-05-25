@@ -13,6 +13,7 @@ public class KeymashManager : MonoBehaviour
     private float _playerScore = 5f;
     private List<GameObject> _spawnedKeys = new List<GameObject>(); 
     private List<Image> _spawnedKeyImages = new List<Image>();
+    [SerializeField] private GameObject _minigameCanvas;
     [SerializeField] private List<LetterSprite> _spriteList = new List<LetterSprite>();
     [SerializeField] private float _playerGain = 0.45f;
     [SerializeField] private float _winThreshold = 10;
@@ -28,13 +29,16 @@ public class KeymashManager : MonoBehaviour
     private int _letterIndex;
     private char _currentLetter;
     private bool _hasEnded = false;
-    [Button(enabledMode:EButtonEnableMode.Playmode)]
-    private void StartMinigameTest()
+    public event Action<bool> OnGameEnd;
+
+    private void Start()
     {
-        StartMinigame("PENISBALLS");
+        _minigameCanvas.SetActive(false);
     }
     public void StartMinigame(string givenWord)
     {
+        _minigameCanvas.SetActive(true);
+
         for (int i = 0; i < _spawnedKeyImages.Count; i++) 
         {
             _spawnedKeyImages[i].DOKill();
@@ -55,7 +59,7 @@ public class KeymashManager : MonoBehaviour
     
     private IEnumerator KeySmashSequence()
     {
-        while (_playerScore < _winThreshold)
+        while (_playerScore < _winThreshold && _playerScore > 0)
         {
             _playerScore -= _enemyGain;
             yield return new WaitForSecondsRealtime(_enemySpeed);
@@ -131,10 +135,11 @@ public class KeymashManager : MonoBehaviour
             yield return new WaitForSecondsRealtime(0.15f);
         }
         if (_spawnedKeyImages.Count > 0)
-            {
-                _spawnedKeyImages.Last().sprite = PressedSpriteForLetter(_currentLetter);
-                _spawnedKeyImages.Last().rectTransform.DOPunchScale(Vector3.one * 0.4f, 0.2f);
-            }
+        {
+            _spawnedKeyImages.Last().sprite = PressedSpriteForLetter(_currentLetter);
+            _spawnedKeyImages.Last().rectTransform.DOPunchScale(Vector3.one * 0.4f, 0.2f);
+        }
+        OnGameEnd?.Invoke(_playerScore >= _winThreshold);
     }
 
     private Sprite SpriteForLetter(char letter)

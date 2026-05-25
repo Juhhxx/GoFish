@@ -17,6 +17,14 @@ public class BattleManager : MonoBehaviour
     [SerializeField] private CardSettings _cardSettings;
 
     [SerializeField] private DeckManager _deckManager;
+    [SerializeField] private ShopManager _shopManager;
+
+    [SerializeField] private KeymashManager _keymashMinigame;
+    [SerializeField] private string _revoltWord = "REVOLT";
+    [SerializeField] private string _capitalWord = "CAPITAL";
+
+    [SerializeField] private GameObject _winScreen;
+    [SerializeField] private GameObject _loseScreen;
 
     private BattleState _currentState = BattleState.Start;
 
@@ -43,6 +51,27 @@ public class BattleManager : MonoBehaviour
     private void Start()
     {
         _playerController.HandManager.OnHandSelectionChanged += (_,_) => RefreshBattleState();
+        _playerController.Battler.OnDead += () =>
+                                        {
+                                            _playerDead = true;
+                                            BattleEnd();
+                                        };
+        _enemyController.Battler.OnDead += () =>
+                                        {
+                                            _enemyDead = true;
+                                            BattleEnd();
+                                        };
+        _shopManager.OnLandBought += () =>
+                                        {
+                                            _landBought = true;
+                                            BattleEnd();
+                                        };
+                                        
+        _keymashMinigame.OnGameEnd += (playerWon) =>
+                                        {
+                                            if (playerWon) _winScreen.SetActive(true);
+                                            else _loseScreen.SetActive(true);
+                                        };
 
         StartBattle();
     }
@@ -165,8 +194,16 @@ public class BattleManager : MonoBehaviour
         OnEnemyAction?.Invoke($"");
     }
 
+    private bool _playerDead = false;
+    private bool _enemyDead = false;
+    private bool _landBought = false;
+
     private IEnumerator BattleLoop()
     {
+        _playerDead = false;
+        _enemyDead = false;
+        _landBought = false;
+
         _deckManager.InitializeDeck(_deck);
         _deckManager.ToggleDeck(false);
 
@@ -178,6 +215,7 @@ public class BattleManager : MonoBehaviour
 
         while(true)
         {
+
             if (IsPlayerTurn())
             {
                 Debug.Log("PlayerTurn");
@@ -194,7 +232,26 @@ public class BattleManager : MonoBehaviour
                 OnEnemyAction?.Invoke("");
                 yield return EnemyTurn();
             }
+
+            if (_deckManager.Deck.Cards.Count == 0) break;
         }
+
+        BattleEnd();
+    }
+
+    private void BattleEnd()
+    {
+        if (_landBought) StartCoroutine(EndMessageCR("Pleasure doing business.", () => _keymashMinigame.StartMinigame(_capitalWord)));
+        else if (_enemyDead) StartCoroutine(EndMessageCR("We'll see about that.", () => _keymashMinigame.StartMinigame(_revoltWord)));
+        else if (_playerDead) StartCoroutine(EndMessageCR("A pitiful attempt.", () => _loseScreen.SetActive(true)));
+        else if (_deckManager.Deck.Cards.Count == 0) StartCoroutine(EndMessageCR("When in the ocean,\ndo as the animals do.", () => _keymashMinigame.StartMinigame(_revoltWord)));
+    }
+
+    private IEnumerator EndMessageCR(string message, Action onEnd)
+    {
+        OnEnemyAction?.Invoke(message);
+        yield return new WaitForSeconds(2f);
+        onEnd?.Invoke();
     }
 
     private IEnumerator PlayerTurn()
@@ -204,52 +261,58 @@ public class BattleManager : MonoBehaviour
 
         if (_playerController.HandManager.Hand.Count == 0)
         {
+            if (_deckManager.Deck.Cards.Count == 0) yield break;
+
             yield return RefilCardsCR(true);
         }
 
         while (keepPlaying)
         {
-            _currentState = BattleState.PlayerCall;
-
-            _playerHasCalled = false;
-
-            yield return new WaitUntil(() => _playerHasCalled);
-
-            Debug.Log($"PLAYER CALLED : {_playerCalledRank}");
-
-            _enemyController.AddRankMemory(_playerCalledRank);
-
-            bool success = ResolveCall(_playerController.HandManager, _enemyController.HandManager, _playerCalledRank);
-
-            yield return new WaitForSeconds(0.5f);
-
-            if (!success)
+            if (_playerController.HandManager.Hand.Count > 0)
             {
-                OnEnemyAction?.Invoke($"Go fish.");
+                _currentState = BattleState.PlayerCall;
 
-                _currentState = BattleState.PlayerFish;
+                _playerHasCalled = false;
 
-                _playerHasFished = false;
+                yield return new WaitUntil(() => _playerHasCalled || _playerController.HandManager.Hand.Count == 0);
 
-                _deckManager.ToggleDeck(true);
+                Debug.Log($"PLAYER CALLED : {_playerCalledRank}");
 
-                yield return new WaitUntil(() => _playerHasFished);
+                _enemyController.AddRankMemory(_playerCalledRank);
 
-                Debug.Log($"{_playerCalledRank} == {_playerFishedRank} ? {_playerCalledRank == _playerFishedRank}");
+                bool success = ResolveCall(_playerController.HandManager, _enemyController.HandManager, _playerCalledRank);
 
-                _deckManager.ToggleDeck(false);
+                yield return new WaitForSeconds(0.5f);
 
-                bool fishedRequestedRank = _playerFishedRank == _playerCalledRank;
-
-                keepPlaying = fishedRequestedRank;
-
-                if (keepPlaying)
+                if (!success || _deckManager.Deck.Cards.Count == 0)
                 {
-                    OnEnemyAction?.Invoke($"Tsk...");
-                    yield return new WaitForSeconds(2.5f);
-                    OnEnemyAction?.Invoke("");
+                    OnEnemyAction?.Invoke($"Go fish.");
+
+                    _currentState = BattleState.PlayerFish;
+
+                    _playerHasFished = false;
+
+                    _deckManager.ToggleDeck(true);
+
+                    yield return new WaitUntil(() => _playerHasFished);
+
+                    Debug.Log($"{_playerCalledRank} == {_playerFishedRank} ? {_playerCalledRank == _playerFishedRank}");
+
+                    _deckManager.ToggleDeck(false);
+
+                    bool fishedRequestedRank = _playerFishedRank == _playerCalledRank;
+
+                    keepPlaying = fishedRequestedRank;
+
+                    if (keepPlaying)
+                    {
+                        OnEnemyAction?.Invoke($"Tsk...");
+                        yield return new WaitForSeconds(2.5f);
+                        OnEnemyAction?.Invoke("");
+                    }
                 }
             }
+            else keepPlaying = false;
         }
 
         _currentTurn++;
@@ -263,10 +326,11 @@ public class BattleManager : MonoBehaviour
 
         if (_enemyController.HandManager.Hand.Count == 0)
         {
+            if (_deckManager.Deck.Cards.Count == 0) yield break;
             OnEnemyAction?.Invoke($"Trust the heart of the cards.");
-            yield return new WaitForSeconds(2.5f);
-            OnEnemyAction?.Invoke("");
             yield return RefilCardsCR(false);
+            yield return new WaitForSeconds(1f);
+            OnEnemyAction?.Invoke("");
         }
 
         bool keepPlaying = true;
@@ -292,42 +356,53 @@ public class BattleManager : MonoBehaviour
                 yield return new WaitForSeconds(1f);
             }
 
-            Rank rank = _enemyController.ChooseRank();
-
-            Debug.Log($"ENEMY CALLED : {rank}");
-            string rankname = _cardSettings.GetRankName(rank);
-            OnEnemyAction?.Invoke($"<b><color=#{Color.maroon.ToHexString()}>{rankname}</color></b>,\nyou got any?");
-            yield return new WaitForSeconds(2.5f);
-
-            bool success = ResolveCall(_enemyController.HandManager, _playerController.HandManager, rank);
-
-            OnEnemyAction?.Invoke("");
-
-            if (!success)
+            if (_enemyController.HandManager.Hand.Count > 0)
             {
-                Rank drawnRank = _deckManager.GiveCard(_enemyController.HandManager, false);
+                Rank rank = _enemyController.ChooseRank();
 
-                Debug.Log($"ENEMY : {rank} == {drawnRank} ? {rank == drawnRank}");
+                Debug.Log($"ENEMY CALLED : {rank}");
+                string rankname = _cardSettings.GetRankName(rank);
+                OnEnemyAction?.Invoke($"<b><color=#{Color.maroon.ToHexString()}>{rankname}</color></b>,\nyou got any?");
+                yield return new WaitForSeconds(2.5f);
 
-                if (drawnRank != rank)
+                bool success = ResolveCall(_enemyController.HandManager, _playerController.HandManager, rank);
+
+                OnEnemyAction?.Invoke("");
+
+                if (!success || _deckManager.Deck.Cards.Count == 0)
                 {
-                    OnEnemyAction?.Invoke($"What a shame...");
-                    yield return new WaitForSeconds(2.5f);
-                    OnEnemyAction?.Invoke("");
-                    keepPlaying = false;    
+                    Rank drawnRank = _deckManager.GiveCard(_enemyController.HandManager, false);
+
+                    Debug.Log($"ENEMY : {rank} == {drawnRank} ? {rank == drawnRank}");
+
+                    if (drawnRank != rank)
+                    {
+                        OnEnemyAction?.Invoke($"What a shame...");
+                        yield return new WaitForSeconds(2.5f);
+                        OnEnemyAction?.Invoke("");
+                        keepPlaying = false;    
+                    }
+                    else
+                    {
+                        OnEnemyAction?.Invoke($"I got the <b><color=#{Color.maroon.ToHexString()}>{rank}</color></b> I was looking for...");
+                        yield return new WaitForSeconds(2.5f);
+                        OnEnemyAction?.Invoke("");
+                    }
                 }
                 else
                 {
-                    OnEnemyAction?.Invoke($"I got the <b><color=#{Color.maroon.ToHexString()}>{rank}</color></b> I was looking for...");
+                    OnEnemyAction?.Invoke($"Thank you\nhehehe...");
                     yield return new WaitForSeconds(2.5f);
                     OnEnemyAction?.Invoke("");
                 }
             }
             else
             {
-                OnEnemyAction?.Invoke($"Thank you\nhehehe...");
+                OnEnemyAction?.Invoke($"I t seems I'm out of cards...");
                 yield return new WaitForSeconds(2.5f);
                 OnEnemyAction?.Invoke("");
+
+                keepPlaying = false;
             }
 
             yield return new WaitForSeconds(1.5f);

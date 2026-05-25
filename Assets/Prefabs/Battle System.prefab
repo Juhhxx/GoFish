@@ -91,7 +91,7 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 5, y: 5, z: 0.1}
+  m_Size: {x: 10, y: 5, z: 0.1}
   m_Center: {x: 0, y: 0, z: 0}
 --- !u!1 &724776865358763159
 GameObject:
@@ -2280,6 +2280,12 @@ MonoBehaviour:
   _deck: {fileID: 11400000, guid: 5bc9964b81a87844b90489b60fa2a1d1, type: 2}
   _cardSettings: {fileID: 11400000, guid: 757341d70b839794f8207c30b9cdc2d0, type: 2}
   _deckManager: {fileID: 5938795830174374671}
+  _shopManager: {fileID: 0}
+  _keymashMinigame: {fileID: 0}
+  _revoltWord: REVOLT
+  _capitalWord: CAPITAL
+  _winScreen: {fileID: 0}
+  _loseScreen: {fileID: 0}
 --- !u!114 &1218634277606853078
 MonoBehaviour:
   m_ObjectHideFlags: 0

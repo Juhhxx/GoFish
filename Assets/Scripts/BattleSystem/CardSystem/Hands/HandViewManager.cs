@@ -108,12 +108,12 @@ public class HandViewManager : MonoBehaviour
         for (int i = _cardViews.Count - 1; i >= 0; i--)
         {
             CardViewManager view = _cardViews[i];
-            Interactable inter = view.GetComponent<Interactable>();
-            inter.enabled = false;
+            var col = view.GetComponent<Collider>();
 
             if (!hand.Contains(view.Card))
             {
                 _cardViews.RemoveAt(i);
+                col.enabled = false;
 
                 var pos = view.transform.localPosition;
                 pos.y = -2.5f;
