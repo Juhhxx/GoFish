@@ -404,9 +404,9 @@ MonoBehaviour:
   - KeySprite: {fileID: 21300000, guid: b96aa5678151cfa478287d63c6a62a55, type: 3}
     PressedSprite: {fileID: 21300000, guid: 422e07e751d448443a5e20f606459988, type: 3}
     Letter: 90
-  _playerGain: 0.6
+  _playerGain: 0.45
   _winThreshold: 10
-  _enemyGain: 0.2
+  _enemyGain: 0.3
   _enemySpeed: 0.1
   _shakeIntensity: 25
   _shakeTarget: {fileID: 328048265}
