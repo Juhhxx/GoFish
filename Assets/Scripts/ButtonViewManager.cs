@@ -18,7 +18,7 @@ public class ButtonViewManager : MonoBehaviour
         transform.DOKill();
         _outline?.DOKill();
         transform.DOScale(Vector3.one * _hoverScaleAmount, _tweenDurations);
-        _outline.DOColor(_outlineHoveredColor, _tweenDurations);
+        _outline?.DOColor(_outlineHoveredColor, _tweenDurations);
     }
 
     public void DoUnhoveredAnim()

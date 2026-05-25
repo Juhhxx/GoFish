@@ -35,13 +35,19 @@ public class KeymashManager : MonoBehaviour
     {
         _minigameCanvas.SetActive(false);
     }
+
+    [Button]
+    private void StartTest()
+    {
+        StartMinigame("TEST");
+    }
     public void StartMinigame(string givenWord)
     {
         _minigameCanvas.SetActive(true);
 
         for (int i = 0; i < _spawnedKeyImages.Count; i++) 
         {
-            _spawnedKeyImages[i].DOKill();
+            _spawnedKeyImages[i].rectTransform.DOKill();
             Destroy(_spawnedKeys[i]);
         }
         _spawnedKeys.Clear();
@@ -73,6 +79,7 @@ public class KeymashManager : MonoBehaviour
         if (Input.GetKeyDown(_keyToPress) && !_hasEnded)
         {
             ProceedLetter();
+            _shakeTarget.DOKill();
             _shakeTarget.DOAnchorPos(Vector3.zero, 0.1f);
             _shakeTarget.DOShakePosition(0.2f, new Vector3(_shakeIntensity, _shakeIntensity, 0));
         }
@@ -101,8 +108,9 @@ public class KeymashManager : MonoBehaviour
         if (!_hasEnded) 
         {
             _playerScore += _playerGain;
-            _sliderTransform.DOKill(false);
-            _sliderTransform.DOShakeRotation(0.075f, 5f);
+            _sliderTransform.localEulerAngles = Vector3.zero;
+            _sliderTransform.DOKill();
+            _sliderTransform.DOShakeRotation(0.075f, new Vector3(0f, 0f, 5f));
         }
         if (_spawnedKeyImages.Count >= 1) 
         {
@@ -118,7 +126,7 @@ public class KeymashManager : MonoBehaviour
             _letterIndex = 0;
             for (int i = 0; i < _spawnedKeyImages.Count; i++) 
             {
-                _spawnedKeyImages[i].DOKill();
+                _spawnedKeyImages[i].rectTransform.DOKill();
                 Destroy(_spawnedKeys[i]);
             }
             _spawnedKeys.Clear();
