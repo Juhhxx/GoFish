@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using NUnit.Framework;
 using Unity.VisualScripting;
 using UnityEngine;
 
@@ -134,18 +135,23 @@ public class BattleManager : MonoBehaviour
         StartCoroutine(PlayPeixinhoCR());
         DoRankHability(_playerController, _enemyController, _playerController.HandManager.GetPeixinhoRank(), isFull);
     }
-    private IEnumerator PlayPeixinhoCR()
+    private IEnumerator PlayPeixinhoCR(bool isPlayer)
     {
-        foreach (CardInstance card in _playerController.HandManager.GetSelectedCards())
+        BattlerController controller = isPlayer ? _playerController : _enemyController;
+
+        foreach (CardInstance card in controller.HandManager.GetSelectedCards())
         {
-            _playerController.HandManager.RemoveCard(card);
+            controller.HandManager.RemoveCard(card);
             yield return new WaitForSeconds(0.5f);
         }
-        _playerController.HandManager.ClearSelection();
+        controller.HandManager.ClearSelection();
         
-        OnEnemyAction?.Invoke($"Interesting play...");
-        yield return new WaitForSeconds(2.5f);
-        OnEnemyAction?.Invoke("");
+        if (isPlayer)
+        {
+            OnEnemyAction?.Invoke($"Interesting play...");
+            yield return new WaitForSeconds(2.5f);
+            OnEnemyAction?.Invoke("");
+        }
     }
 
     private bool _playerHasFished;
@@ -265,7 +271,7 @@ public class BattleManager : MonoBehaviour
 
         while (keepPlaying)
         {
-            Rank rank = ChooseEnemyRank();
+            Rank rank = _enemyController.ChooseRank();
 
             Debug.Log($"ENEMY CALLED : {rank}");
             string rankname = _cardSettings.GetRankName(rank);
@@ -307,12 +313,6 @@ public class BattleManager : MonoBehaviour
         }
 
         _currentTurn++;
-    }
-
-    // Enemy Decisions (Temporary)
-    private Rank ChooseEnemyRank()
-    {
-        return _enemyController.HandManager.Hand[UnityEngine.Random.Range(0, _enemyController.HandManager.Hand.Count)].Rank;
     }
     
     // Peixinho Actions

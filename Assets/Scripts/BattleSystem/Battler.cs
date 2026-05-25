@@ -86,7 +86,11 @@ public class BattlerInstance
         OnMultChanged?.Invoke(_mult);
     }
 
-    public int GetFinalDamage() => (int)(Damage * Mult);
+    public int GetFinalDamage()
+    {
+        Debug.Log($"Final Damage: {(int)(Damage * Mult)} ({(Damage * Mult)})");
+        return (int)(Damage * Mult);
+    }
 
     public int Level => _hpLevel + _dmgLevel;
 
