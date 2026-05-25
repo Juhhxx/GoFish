@@ -28,6 +28,8 @@ public class CardViewManager : MonoBehaviour
 
     private Vector3 _originPos;
     private float _originRot;
+    private bool _deleted = false;
+    public void SetDeleted() => _deleted = true;
     private bool _selected = false;
     public bool Selected => _selected;
 
@@ -80,6 +82,8 @@ public class CardViewManager : MonoBehaviour
 
     public void DoCardHoverAnim()
     {
+        if (_deleted) return;
+
         transform.DOKill();
         transform.DOScale(Vector3.one * _hoverScaleAmount, _tweenHoverDuration);
         transform.DOLocalMove(_originPos + _hoverMoveAmount, _tweenHoverDuration);
@@ -88,6 +92,8 @@ public class CardViewManager : MonoBehaviour
 
     public void DoCardUnhoverAnim()
     {
+        if (_deleted) return;
+
         transform.DOKill();
         transform.DOScale(Vector3.one, _tweenHoverDuration);
         transform.DOLocalMove(_originPos, _tweenHoverDuration);
@@ -96,16 +102,22 @@ public class CardViewManager : MonoBehaviour
 
     public void DoSelectedAnim()
     {
+        if (_deleted) return;
+
         _cardOutline.DOColor(_outlineSelectedColor, 0.2f);
     }
 
     public void DoUnselectAnim()
     {
+        if (_deleted) return;
+
         _cardOutline.DOColor(_outlineColor, 0.2f);
     }
 
     public void DoCallAnim()
     {
+        if (_deleted) return;
+
         transform.DOKill();
         transform.DOScale(Vector3.one * _callScaleAmount, _tweenHoverDuration);
         transform.DOLocalMove(_originPos + _callMoveAmount, _tweenHoverDuration);
@@ -113,6 +125,8 @@ public class CardViewManager : MonoBehaviour
 
     public void DoPeixinhoAnim()
     {
+        if (_deleted) return;
+
         transform.DOKill();
         transform.DOShakeRotation(0.2f, _peixinhoShakeAmount, randomness: 50).SetLoops(-1);
         transform.DOScale(Vector3.one * _callScaleAmount, _tweenHoverDuration);
@@ -120,6 +134,8 @@ public class CardViewManager : MonoBehaviour
 
     public void DoStopAnimations(bool toggleOutline = false)
     {
+        if (_deleted) return;
+        
         transform.DOKill();
         transform.DOLocalMove(_originPos, 0.2f);
         transform.DOScale(Vector3.one, 0.2f);

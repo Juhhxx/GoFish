@@ -435,11 +435,11 @@ public class BattleManager : MonoBehaviour
                 break;
 
             case Hability.MultAdd:
-                caller.AddMult(1, isFull);
+                caller.AddMult(2, isFull);
                 break;
             
             case Hability.MultMult:
-                caller.MultiplyMult(2f, isFull);
+                caller.MultiplyMult(4f, isFull);
                 break;
             
             default:

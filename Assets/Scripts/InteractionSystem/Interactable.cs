@@ -21,12 +21,6 @@ public abstract class Interactable : MonoBehaviour
     {
         Interactable[] ints = transform.parent?.GetComponentsInParent<Interactable>();
 
-        if (ints == null || ints.Length == 0)
-        {
-            transform.position += -Vector3.forward;
-        }
-        else Debug.Log($"{name} IS CHILD", this);
-
         Debug.Log($"{name} : {transform.position}");
     }
 

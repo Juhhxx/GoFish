@@ -19,12 +19,16 @@ public abstract class BattlerController : MonoBehaviour
     {
         int damage = isFull ? battler.GetFinalDamage() : battler.GetFinalDamage() / 2;
 
+        damage = Mathf.Min(1, damage);
+
         Battler.CurrentHp -= damage;
     }
 
     public void Heal(BattlerInstance battler, bool isFull)
     {
         int heal = isFull ? battler.GetFinalDamage() : battler.GetFinalDamage() / 2;
+
+        heal = Mathf.Min(1, heal);
 
         Battler.CurrentHp += heal;
     }
