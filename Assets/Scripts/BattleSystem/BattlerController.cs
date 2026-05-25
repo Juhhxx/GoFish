@@ -40,7 +40,7 @@ public abstract class BattlerController : MonoBehaviour
     {
         if (!isFull) quantity /= 2;
 
-        quantity += 1;
+        if (quantity < 0) quantity += 1;
 
         Battler.MultiplyMult(quantity);
     }

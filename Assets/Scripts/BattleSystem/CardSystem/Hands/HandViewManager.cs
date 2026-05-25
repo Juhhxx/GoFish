@@ -108,6 +108,8 @@ public class HandViewManager : MonoBehaviour
         for (int i = _cardViews.Count - 1; i >= 0; i--)
         {
             CardViewManager view = _cardViews[i];
+            Interactable inter = view.GetComponent<Interactable>();
+            inter.enabled = false;
 
             if (!hand.Contains(view.Card))
             {

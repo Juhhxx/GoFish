@@ -217,6 +217,8 @@ public class BattleManager : MonoBehaviour
 
             Debug.Log($"PLAYER CALLED : {_playerCalledRank}");
 
+            _enemyController.AddRankMemory(_playerCalledRank);
+
             bool success = ResolveCall(_playerController.HandManager, _enemyController.HandManager, _playerCalledRank);
 
             yield return new WaitForSeconds(0.5f);
@@ -271,6 +273,25 @@ public class BattleManager : MonoBehaviour
 
         while (keepPlaying)
         {
+            while (_enemyController.TryChoosePeixinho(out var cards, out bool isFull))
+            {
+                Rank rankPex = cards[0].Rank;
+
+                foreach (CardInstance card in cards)
+                {
+                    _enemyController.HandManager.ToggleCardSelection(card);
+                }
+
+                OnEnemyAction?.Invoke(isFull ? $"Peixinho of {_cardSettings.GetRankName(rankPex)}!" : $"Half-xinho  of {_cardSettings.GetRankName(rankPex)}!");
+                yield return new WaitForSeconds(1.5f);
+                yield return PlayPeixinhoCR(false);
+                OnEnemyAction?.Invoke("");
+
+                DoRankHability(_enemyController, _playerController, rankPex, isFull);
+
+                yield return new WaitForSeconds(1f);
+            }
+
             Rank rank = _enemyController.ChooseRank();
 
             Debug.Log($"ENEMY CALLED : {rank}");
@@ -343,7 +364,7 @@ public class BattleManager : MonoBehaviour
                 break;
             
             case Hability.MultMult:
-                caller.MultiplyMult(0.5f, isFull);
+                caller.MultiplyMult(2f, isFull);
                 break;
             
             default:
