@@ -132,7 +132,7 @@ public class BattleManager : MonoBehaviour
 
     public void PlayPeixinho(bool isFull)
     {
-        StartCoroutine(PlayPeixinhoCR());
+        StartCoroutine(PlayPeixinhoCR(true));
         DoRankHability(_playerController, _enemyController, _playerController.HandManager.GetPeixinhoRank(), isFull);
     }
     private IEnumerator PlayPeixinhoCR(bool isPlayer)
